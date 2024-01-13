@@ -10,3 +10,13 @@ function makePageForEpisodes(episodeList) {
 }
 
 window.onload = setup;
+
+function createStructure() {
+  const card = document.createElement("section");
+
+  const filmTitle = document.createElement("h3");
+  filmTitle.textContent = film.filmTitle;
+
+  const filmDirector = document.createElement("p");
+  filmDirector.textContent = film.filmDirector;
+}
