@@ -9,20 +9,24 @@
   </head>
 
   <body>
-    <div id="root">
-      <template id="film-card">
-        <section>
-          <img>
-          <h3>film Title</h3>
-          <p>film Director</p>
-          <time>film Duration</time>
-          <p id="data-certificate">Certificate</p>
-          <summary id="film-summary"></summary>
-          
-        </section>
-
-      </template>
-    </div>
+    <header id="header"></header>
+    <main id="main">
+      <div id="root">
+        <template id="film-card">
+          <section class="card">
+            <div class="explaination">
+              <h3 id="film-title">film Title and Episode</h3>
+              <p id="film-director">film Director</p>
+              <details class="details" id="film-summary"></details>
+            </div>
+            <div class="img">
+              <img id="film-img" />
+            </div>
+          </section>
+        </template>
+      </div>
+    </main>
+    <footer id="footer"></footer>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
     <script src="episodes.js"></script>
