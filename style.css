@@ -17,10 +17,12 @@ body{
 }
 #main{
   grid-area: m;
-  display: grid;
-  grid-template-areas: 
-  'a1'
-  'a2';
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem;
+  margin: 0;
 }
 section{
   display: flex;
@@ -28,17 +30,60 @@ section{
   justify-content: space-between;
   align-items: flex-start;
   border: 1px solid black;
-  width: 60%;
+  width: 70%;
   margin: 1rem auto;
   padding: 1rem
   
 }
 
-.explaination>h3{
-  margin: 0;
+.explaination>*{
+  margin-top: 0;
+  margin-bottom: .5rem;
+}
+aside:first-child{
+  flex: 70%;
+}
+aside:last-child{
+  flex: 20%;
+  padding: 0;
+  margin-right: 0;
+}
+#side-bar>div{
+  width: 100%;
+  margin: auto;
+}
+#side-bar>:nth-child(1)> *{
+  display: block;
+  width: 100%;
+  margin: auto;
+
+}
+#side-bar>:nth-child(2)>p{
+  font-size: x-large;
   
 }
+#subscribe-img{
+  width: 40%;
 
+}
+#subscribtion{
+  height: 3rem;
+  color: white;
+  font-size: larger;
+  font-weight: bold;
+  background-color: rgb(0, 69, 245);
+  font-size: larger;
+}
+#subscribtion:hover{
+  background-color:rgb(49, 105, 246) ;
+  cursor: pointer;
+}
+.details{
+  text-align: justify;
+  padding: .2rem;
+  border: 1px solid white;
+  width: 85%;
+}
 #footer{
   grid-area: f;
 }

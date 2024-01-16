@@ -87,6 +87,8 @@ function showCard() {
 
     const filmImage = card.getElementById("film-img");
     filmImage.src = item.image.medium;
+    const alt = `image of ${episode} of ${item.name}`;
+    filmImage.setAttribute("alt", alt);
 
     const duration = card.getElementById("duration");
     duration.textContent = `Duration: ${item.runtime}`;
