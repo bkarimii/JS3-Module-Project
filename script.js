@@ -88,8 +88,8 @@ function showCard() {
     const filmImage = card.getElementById("film-img");
     filmImage.src = item.image.medium;
 
-    const filmDirector = card.getElementById("film-director");
-    filmDirector.textContent = item.runtime;
+    const duration = card.getElementById("duration");
+    duration.textContent = `Duration: ${item.runtime}`;
 
     const filmSummary = card.getElementById("film-summary");
     filmSummary.innerHTML = `<summary>Movie summary:</summary> +${item.summary}`;

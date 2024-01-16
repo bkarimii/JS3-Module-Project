@@ -17,15 +17,25 @@ body{
 }
 #main{
   grid-area: m;
+  display: grid;
+  grid-template-areas: 
+  'a1'
+  'a2';
 }
 section{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   border: 1px solid black;
   width: 60%;
   margin: 1rem auto;
+  padding: 1rem
+  
+}
+
+.explaination>h3{
+  margin: 0;
   
 }
 

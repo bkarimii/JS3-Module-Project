@@ -11,12 +11,12 @@
   <body>
     <header id="header"></header>
     <main id="main">
-      <div id="root">
+      <aside id="root">
         <template id="film-card">
           <section class="card">
             <div class="explaination">
               <h3 id="film-title">film Title and Episode</h3>
-              <p id="film-director">film Director</p>
+              <time id="duration"></time>
               <details class="details" id="film-summary"></details>
             </div>
             <div class="img">
@@ -24,7 +24,11 @@
             </div>
           </section>
         </template>
-      </div>
+      </aside>
+      <aside id="side-bar">
+        <div>show the discount <img src="20%off" />;</div>
+        <div></div>
+      </aside>
     </main>
     <footer id="footer"></footer>
 
