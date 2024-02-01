@@ -6,6 +6,10 @@
     <title>TV Show Project | Behrouz Karimi (bkarimii)</title>
     <link href="style.css" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
   </head>
 
   <body>
@@ -25,7 +29,13 @@
 
     <main id="main">
       <div id="search-box-container">
-        <input type="text" />
+        <input
+          type="text"
+          id="search-box"
+          placeholder="Search Through the episodes and summary"
+        />
+
+        <span id="search-counting"> </span>
       </div>
       <template id="film-card">
         <section class="card">
@@ -41,12 +51,11 @@
       </template>
       <aside id="root"></aside>
       <aside id="side-bar">
-        <!-- // section of drop-down menue -->
+        <!-- section of drop-down menue -->
         <section id="search-section">
           <label for="episode-drop-down">Choose your Episode:</label>
           <select name="episodes" id="episode-drop-down">
-            <option value="">Choose an episode</option>
-            <option value="e01s01">E01S01-Winter is coming</option>
+            <option value="">Show All Episodes</option>
           </select>
         </section>
         <section>

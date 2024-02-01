@@ -144,28 +144,53 @@ dropDown.addEventListener("change", () => {
       document.getElementById("root").innerHTML = "";
       showCard(element);
     }
-    //else if (elementTitle == dropDownValue) {
-    //   console.log(elementTitle);
-    //   const tempForDropDown = document.querySelector("#drop-down-template");
-    //   const dropCard = tempForDropDown.content.cloneNode(true);
-
-    //   const hTitle = dropCard.createElement("h3");
-    //   hTitle.textContent = elementTitle;
-    //   dropCard.appendChild(hTitle);
-
-    //   const pDuration = dropCard.createElement("p");
-    //   pDuration.textContent = element.runtime;
-    //   dropCard.appendChild(pDuration);
-
-    //   const image = dropCard.createElement("img");
-    //   image.src = element.image.medium;
-    //   dropCard.appendChild(image);
-
-    //   const details = dropCard.createElement("details");
-    //   details.innerHTML = `<summary>Movie summary:</summary> +${element.summary}`;
-    //   dropCard.appendChild(details);
-
-    //   const sectionForDrop = document.getElementById("drop-down-display");
-    //   sectionForDrop.appendChild(dropCard);
   });
+});
+
+///////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+//
+// geting search box from the page
+const searchBox = document.getElementById("search-box");
+
+//this variable is used inside the event listener to clear the page only once
+let clearPage = true;
+let resultCounter = 0;
+const searchCounter = document.createElement("span");
+searchBox.addEventListener("input", () => {
+  const searchBoxvalue = searchBox.value.trim().toLowerCase();
+  clearPage = true;
+  resultCounter = 0;
+
+  if (searchBoxvalue === "") {
+    showAllCards();
+    searchCounter.innerHTML = "";
+    searchCounter.style.display = "none";
+  } else {
+    list.forEach((element) => {
+      // set name and summary to lower case for using include method
+      const elementNamelowerCase = element.name.toLowerCase();
+      const elementSummaryLowerCase = element.summary.toLowerCase();
+
+      // check for including
+      const includeName = elementNamelowerCase.includes(searchBoxvalue);
+      const includeSummary = elementSummaryLowerCase.includes(searchBoxvalue);
+
+      if (includeName || includeSummary) {
+        resultCounter++;
+        if (clearPage) {
+          document.getElementById("root").innerHTML = "";
+          clearPage = false;
+        }
+
+        showCard(element);
+      }
+    });
+
+    // Display the search counter
+    searchCounter.innerHTML = `${resultCounter} item${
+      resultCounter !== 1 ? "s" : ""
+    } matched the search`;
+    searchCounter.style.display = "inline";
+  }
 });

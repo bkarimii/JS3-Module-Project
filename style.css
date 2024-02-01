@@ -107,6 +107,8 @@ aside:last-child{
   padding: 1rem;
   z-index: 1;
   /* Ensure it's on top of other elements within #main */
+  width: 20%;
+  color: #fff;
 
   margin-bottom:2rem ;
 }
@@ -171,3 +173,16 @@ aside:last-child{
   /* Change the color on hover */
 }
 /* ============================================== */
+
+#search-counting{
+  display: block;
+  background-color: #ffcc00;
+  margin: 1em;
+  font-weight: bolder;
+  font-size: larger;
+}
+
+#search-icon:hover{
+  cursor: pointer;
+  
+} 
