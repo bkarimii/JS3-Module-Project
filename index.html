@@ -9,8 +9,24 @@
   </head>
 
   <body>
-    <header id="header"></header>
+    <header class="site-header">
+      <div class="logo">
+        <img src="logo.svg" alt="Logo" />
+      </div>
+      <nav class="main-navigation">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
     <main id="main">
+      <div id="search-box-container">
+        <input type="text" />
+      </div>
       <aside id="root">
         <template id="film-card">
           <section class="card">
@@ -40,6 +56,14 @@
             the latest news from the box office and Hollywood.
           </p>
         </div>
+        <!-- // section of drop-down menue -->
+        <section id="search-section">
+          <label for="episode-drop-down">Choose your Episode:</label>
+          <select name="episodes" id="episode-drop-down">
+            <option value="">Choose an episode</option>
+            <option value="e01s01">E01S01-Winter is coming</option>
+          </select>
+        </section>
       </aside>
     </main>
     <footer id="footer"></footer>

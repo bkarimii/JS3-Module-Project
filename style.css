@@ -23,6 +23,9 @@ body{
   justify-content: space-between;
   padding: 1rem;
   margin: 0;
+
+  position: relative;
+    /* Make it a positioning context for absolute positioning */
 }
 section{
   display: flex;
@@ -40,14 +43,18 @@ section{
   margin-top: 0;
   margin-bottom: .5rem;
 }
-aside:first-child{
+
+
+/* aside:first-child{
   flex: 70%;
 }
 aside:last-child{
   flex: 20%;
   padding: 0;
   margin-right: 0;
-}
+} */
+
+
 #side-bar>div{
   width: 100%;
   margin: auto;
@@ -87,3 +94,78 @@ aside:last-child{
 #footer{
   grid-area: f;
 }
+
+
+/*  style for level 200 serach box and drop down */
+#search-box-container {
+  position: absolute;
+  /* Position the search box absolutely within the #main container */
+  top: 0;
+  /* Position it at the top of the #main container */
+  left: 0;
+  /* Position it at the left of the #main container */
+  padding: 1rem;
+  z-index: 1;
+  /* Ensure it's on top of other elements within #main */
+
+  margin-bottom:2rem ;
+}
+
+/* Add styling for the input box */
+#search-box-container input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+}
+
+
+#root {
+  flex: 70%;
+}
+
+#side-bar {
+  flex: 20%;
+  padding: 0;
+  margin-right: 0;
+}
+
+.site-header {
+  background-color: #333;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo img {
+  width: 100px;
+  /* Adjust the width based on your logo size */
+}
+
+.main-navigation ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.main-navigation li {
+  margin-right: 20px;
+}
+
+.main-navigation a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.main-navigation a:hover {
+  color: #ffcc00;
+  /* Change the color on hover */
+}
+/* ============================================== */

@@ -75,9 +75,9 @@ function padStartEpisodes(season, episode) {
   return seasonEpisode;
 }
 
-function showCard() {
-  const list = getAllEpisodes();
+const list = getAllEpisodes();
 
+function showCard() {
   for (let item of list) {
     const temp = document.getElementById("film-card");
     const card = temp.content.cloneNode(true);
@@ -103,3 +103,15 @@ function showCard() {
 showCard();
 
 //comment to start level 200 by bkarimi
+
+const dropDown = document.querySelector("#episode-drop-down");
+function createDropDownList() {
+  for (let item of list) {
+    const option = document.createElement("option");
+    const episode = padStartEpisodes(item.season, item.number);
+    option.value = episode;
+    option.textContent = item.name;
+    dropDown.appendChild(option);
+  }
+}
+createDropDownList();
