@@ -193,3 +193,7 @@ aside:last-child{
   font-size: large;
   color: rgb(248, 181, 57);
 }
+
+.film-summary-tag{
+  width: 15rem;
+}

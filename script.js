@@ -100,7 +100,7 @@ function showCard(item) {
   duration.textContent = `Duration: ${item.runtime}`;
 
   const filmSummary = card.getElementById("film-summary");
-  filmSummary.innerHTML = `<summary>Movie summary:</summary> +${item.summary}`;
+  filmSummary.innerHTML = `<summary class='film-summary-tag'>Movie summary:</summary> +${item.summary}`;
 
   rootAside.appendChild(card);
 }
