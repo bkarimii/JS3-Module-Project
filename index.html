@@ -27,35 +27,20 @@
       <div id="search-box-container">
         <input type="text" />
       </div>
-      <aside id="root">
-        <template id="film-card">
-          <section class="card">
-            <div class="explaination">
-              <h3 id="film-title">film Title and Episode</h3>
-              <p id="duration"></p>
-              <details class="details" id="film-summary"></details>
-            </div>
-            <div class="img">
-              <img id="film-img" />
-            </div>
-          </section>
-        </template>
-      </aside>
+      <template id="film-card">
+        <section class="card">
+          <div class="explaination">
+            <h3 id="film-title">film Title and Episode</h3>
+            <p id="duration"></p>
+            <details class="details" id="film-summary"></details>
+          </div>
+          <div class="img">
+            <img id="film-img" />
+          </div>
+        </section>
+      </template>
+      <aside id="root"></aside>
       <aside id="side-bar">
-        <div>
-          <img
-            src="https://www.manorandashburyresorts.co.uk/wp-content/uploads/2023/12/20-OFF-800x800.gif"
-            id="subscribe-img"
-            alt="sbscribe offer, 20% off"
-          />
-          <button id="subscribtion">Join Now</button>
-        </div>
-        <div>
-          <p>
-            Join us today and get 20% off your subscription. You'll also receive
-            the latest news from the box office and Hollywood.
-          </p>
-        </div>
         <!-- // section of drop-down menue -->
         <section id="search-section">
           <label for="episode-drop-down">Choose your Episode:</label>
@@ -63,6 +48,34 @@
             <option value="">Choose an episode</option>
             <option value="e01s01">E01S01-Winter is coming</option>
           </select>
+        </section>
+        <section>
+          <div>
+            <img
+              src="https://www.manorandashburyresorts.co.uk/wp-content/uploads/2023/12/20-OFF-800x800.gif"
+              id="subscribe-img"
+              alt="sbscribe offer, 20% off"
+            />
+            <button id="subscribtion">Join Now</button>
+          </div>
+          <div>
+            <p>
+              Join us today and get 20% off your subscription. You'll also
+              receive the latest news from the box office and Hollywood.
+            </p>
+          </div>
+        </section>
+        <section id="drop-down-display">
+          <template id="drop-down-template">
+            <!-- <div>
+              <h3></h3>
+              <p></p>
+              <details></details>
+            </div>
+            <div>
+              <img />
+            </div> -->
+          </template>
         </section>
       </aside>
     </main>

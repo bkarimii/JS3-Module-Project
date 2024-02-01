@@ -77,30 +77,41 @@ function padStartEpisodes(season, episode) {
 
 const list = getAllEpisodes();
 
-function showCard() {
+// this function create only a card . like template card and by using a loop we can create all the cards
+// based on the available objects in tha list array
+
+function showCard(item) {
+  //cloning the template for the cards
+  const temp = document.getElementById("film-card");
+  const card = temp.content.cloneNode(true);
+
+  // using the padstart function to nominating episodes as we are asked to do
+  const episode = padStartEpisodes(item.season, item.number);
+  const filmTitle = card.getElementById("film-title");
+  filmTitle.textContent = `${item.name}${episode}`;
+
+  const filmImage = card.getElementById("film-img");
+  filmImage.src = item.image.medium;
+  const alt = `image of ${episode} of ${item.name}`;
+  filmImage.setAttribute("alt", alt);
+
+  const duration = card.getElementById("duration");
+  duration.textContent = `Duration: ${item.runtime}`;
+
+  const filmSummary = card.getElementById("film-summary");
+  filmSummary.innerHTML = `<summary>Movie summary:</summary> +${item.summary}`;
+
+  const rootAside = document.getElementById("root");
+  rootAside.appendChild(card);
+}
+
+// this function reneder all the objects as cards to the page
+function showAllCards() {
   for (let item of list) {
-    const temp = document.getElementById("film-card");
-    const card = temp.content.cloneNode(true);
-    const episode = padStartEpisodes(item.season, item.number);
-    const filmTitle = card.getElementById("film-title");
-    filmTitle.textContent = `${item.name}${episode}`;
-
-    const filmImage = card.getElementById("film-img");
-    filmImage.src = item.image.medium;
-    const alt = `image of ${episode} of ${item.name}`;
-    filmImage.setAttribute("alt", alt);
-
-    const duration = card.getElementById("duration");
-    duration.textContent = `Duration: ${item.runtime}`;
-
-    const filmSummary = card.getElementById("film-summary");
-    filmSummary.innerHTML = `<summary>Movie summary:</summary> +${item.summary}`;
-
-    const rootDiv = document.getElementById("root");
-    rootDiv.appendChild(card);
+    showCard(item);
   }
 }
-showCard();
+showAllCards();
 
 //comment to start level 200 by bkarimi
 
@@ -109,9 +120,52 @@ function createDropDownList() {
   for (let item of list) {
     const option = document.createElement("option");
     const episode = padStartEpisodes(item.season, item.number);
-    option.value = episode;
-    option.textContent = item.name;
+    option.value = `${item.name}${episode}`;
+    option.textContent = `${item.name}${episode}`;
     dropDown.appendChild(option);
   }
 }
 createDropDownList();
+
+dropDown.addEventListener("change", () => {
+  const dropDownValue = dropDown.value;
+  console.log(dropDownValue);
+  list.forEach((element) => {
+    const elementTitle = `${element.name}${padStartEpisodes(
+      element.season,
+      element.number
+    )}`;
+
+    //cloning template inside the html
+
+    if (dropDownValue === "") {
+      showAllCards();
+    } else if (elementTitle == dropDownValue) {
+      document.getElementById("root").innerHTML = "";
+      showCard(element);
+    }
+    //else if (elementTitle == dropDownValue) {
+    //   console.log(elementTitle);
+    //   const tempForDropDown = document.querySelector("#drop-down-template");
+    //   const dropCard = tempForDropDown.content.cloneNode(true);
+
+    //   const hTitle = dropCard.createElement("h3");
+    //   hTitle.textContent = elementTitle;
+    //   dropCard.appendChild(hTitle);
+
+    //   const pDuration = dropCard.createElement("p");
+    //   pDuration.textContent = element.runtime;
+    //   dropCard.appendChild(pDuration);
+
+    //   const image = dropCard.createElement("img");
+    //   image.src = element.image.medium;
+    //   dropCard.appendChild(image);
+
+    //   const details = dropCard.createElement("details");
+    //   details.innerHTML = `<summary>Movie summary:</summary> +${element.summary}`;
+    //   dropCard.appendChild(details);
+
+    //   const sectionForDrop = document.getElementById("drop-down-display");
+    //   sectionForDrop.appendChild(dropCard);
+  });
+});
