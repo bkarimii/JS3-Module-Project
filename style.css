@@ -102,7 +102,7 @@ aside:last-child{
   /* Position the search box absolutely within the #main container */
   top: 0;
   /* Position it at the top of the #main container */
-  left: 0;
+  right: 0;
   /* Position it at the left of the #main container */
   padding: 1rem;
   z-index: 1;
@@ -110,7 +110,7 @@ aside:last-child{
   width: 20%;
   color: #fff;
 
-  margin-bottom:2rem ;
+  margin-right:2rem ;
 }
 
 /* Add styling for the input box */
