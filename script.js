@@ -80,6 +80,7 @@ const list = getAllEpisodes();
 // this function create only a card . like template card and by using a loop we can create all the cards
 // based on the available objects in tha list array
 
+const rootAside = document.getElementById("root");
 function showCard(item) {
   //cloning the template for the cards
   const temp = document.getElementById("film-card");
@@ -101,7 +102,6 @@ function showCard(item) {
   const filmSummary = card.getElementById("film-summary");
   filmSummary.innerHTML = `<summary>Movie summary:</summary> +${item.summary}`;
 
-  const rootAside = document.getElementById("root");
   rootAside.appendChild(card);
 }
 
@@ -157,6 +157,7 @@ const searchBox = document.getElementById("search-box");
 let clearPage = true;
 let resultCounter = 0;
 const searchCounter = document.createElement("span");
+searchCounter.id = "display-matched-result";
 searchBox.addEventListener("input", () => {
   const searchBoxvalue = searchBox.value.trim().toLowerCase();
   clearPage = true;
@@ -191,6 +192,7 @@ searchBox.addEventListener("input", () => {
     searchCounter.innerHTML = `${resultCounter} item${
       resultCounter !== 1 ? "s" : ""
     } matched the search`;
-    searchCounter.style.display = "inline";
+    searchCounter.style.display = "inline-block";
   }
+  rootAside.prepend(searchCounter);
 });
