@@ -13,56 +13,22 @@
 //window.onload = setup;
 
 //const card = document.getElementById("film-card").content.cloneNode(true);
-const arr = [
-  {
-    id: 4952,
-    url: "http://www.tvmaze.com/episodes/4952/game-of-thrones-1x01-winter-is-coming",
-    name: "Winter is Coming",
-    season: 1,
-    number: 1,
-    airdate: "2011-04-17",
-    airtime: "21:00",
-    airstamp: "2011-04-18T01:00:00+00:00",
-    runtime: 60,
-    image: {
-      medium:
-        "http://static.tvmaze.com/uploads/images/medium_landscape/1/2668.jpg",
-      original:
-        "http://static.tvmaze.com/uploads/images/original_untouched/1/2668.jpg",
-    },
-    summary:
-      "<p>Lord Eddard Stark, ruler of the North, is summoned to court by his old friend, King Robert Baratheon, to serve as the King's Hand. Eddard reluctantly agrees after learning of a possible threat to the King's life. Eddard's bastard son Jon Snow must make a painful decision about his own future, while in the distant east Viserys Targaryen plots to reclaim his father's throne, usurped by Robert, by selling his sister in marriage.</p>",
-    _links: {
-      self: {
-        href: "http://api.tvmaze.com/episodes/4952",
-      },
-    },
-  },
-  {
-    id: 4953,
-    url: "http://www.tvmaze.com/episodes/4953/game-of-thrones-1x02-the-kingsroad",
-    name: "The Kingsroad",
-    season: 1,
-    number: 2,
-    airdate: "2011-04-24",
-    airtime: "21:00",
-    airstamp: "2011-04-25T01:00:00+00:00",
-    runtime: 60,
-    image: {
-      medium:
-        "http://static.tvmaze.com/uploads/images/medium_landscape/1/2669.jpg",
-      original:
-        "http://static.tvmaze.com/uploads/images/original_untouched/1/2669.jpg",
-    },
-    summary:
-      "<p>An incident on the Kingsroad threatens Eddard and Robert's friendship. Jon and Tyrion travel to the Wall, where they discover that the reality of the Night's Watch may not match the heroic image of it.</p>",
-    _links: {
-      self: {
-        href: "http://api.tvmaze.com/episodes/4953",
-      },
-    },
-  },
-];
+
+/////////////LEVEL 300 CLASS PRACTICE////////////////
+const apiUrl = "https://api.tvmaze.com/shows/82/episodes";
+let dataObject;
+
+// Make a GET request using the Fetch API
+async function fetchedData() {
+  let response = await fetch(apiUrl);
+
+  let data = await response.json();
+  list = data;
+  return data;
+}
+
+/////////////////////////////
+/////////////////////
 
 function padStartEpisodes(season, episode) {
   if (season < 10) {
@@ -75,12 +41,13 @@ function padStartEpisodes(season, episode) {
   return seasonEpisode;
 }
 
-const list = getAllEpisodes();
+let list;
 
 // this function create only a card . like template card and by using a loop we can create all the cards
 // based on the available objects in tha list array
 
 const rootAside = document.getElementById("root");
+
 function showCard(item) {
   //cloning the template for the cards
   const temp = document.getElementById("film-card");
@@ -106,12 +73,16 @@ function showCard(item) {
 }
 
 // this function reneder all the objects as cards to the page
-function showAllCards() {
+function showAllCards(list) {
   for (let item of list) {
     showCard(item);
   }
 }
-showAllCards();
+
+fetchedData().then(() => {
+  showAllCards(list);
+  createDropDownList();
+});
 
 //comment to start level 200 by bkarimi
 
@@ -125,26 +96,34 @@ function createDropDownList() {
     dropDown.appendChild(option);
   }
 }
-createDropDownList();
 
 dropDown.addEventListener("change", () => {
   const dropDownValue = dropDown.value;
-  console.log(dropDownValue);
-  list.forEach((element) => {
-    const elementTitle = `${element.name}${padStartEpisodes(
-      element.season,
-      element.number
+  const foundItem = list.find((episode) => {
+    const elementTitle = `${episode.name}${padStartEpisodes(
+      episode.season,
+      episode.number
     )}`;
-
-    //cloning template inside the html
-
-    if (dropDownValue === "") {
-      showAllCards();
-    } else if (elementTitle == dropDownValue) {
-      document.getElementById("root").innerHTML = "";
-      showCard(element);
-    }
+    return elementTitle === dropDownValue;
   });
+  document.getElementById("root").innerHTML = "";
+  if (foundItem) {
+    showCard(foundItem);
+  } else {
+    showAllCards(list);
+  }
+  // list.forEach((element) => {
+  //     const elementTitle = `${element.name}${padStartEpisodes(
+  //       element.season,
+  //       element.number
+  //     )}`;
+  //     if (dropDownValue === "") {
+  //       showAllCards(list);
+  //     } else if (elementTitle == dropDownValue) {
+  //       showCard(element);
+  //     }
+  //   });
+  // });
 });
 
 ///////////////////////////////////////////////////////////////////////////
@@ -164,7 +143,8 @@ searchBox.addEventListener("input", () => {
   resultCounter = 0;
 
   if (searchBoxvalue === "") {
-    showAllCards();
+    document.getElementById("root").innerHTML = "";
+    showAllCards(list);
     searchCounter.innerHTML = "";
     searchCounter.style.display = "none";
   } else {
