@@ -20,11 +20,17 @@ let dataObject;
 
 // Make a GET request using the Fetch API
 async function fetchedData() {
-  let response = await fetch(apiUrl);
-
-  let data = await response.json();
-  list = data;
-  return data;
+  try {
+    let response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error(`Error happened!${response.status}`);
+    }
+    let data = await response.json();
+    list = data;
+    return data;
+  } catch (error) {
+    throw console.error("An error hapened during the fetch!");
+  }
 }
 
 /////////////////////////////
@@ -80,8 +86,12 @@ function showAllCards(list) {
 }
 
 fetchedData().then(() => {
-  showAllCards(list);
-  createDropDownList();
+  try {
+    showAllCards(list);
+    createDropDownList();
+  } catch {
+    console.log("an error happened during fetching the data");
+  }
 });
 
 //comment to start level 200 by bkarimi
@@ -112,18 +122,6 @@ dropDown.addEventListener("change", () => {
   } else {
     showAllCards(list);
   }
-  // list.forEach((element) => {
-  //     const elementTitle = `${element.name}${padStartEpisodes(
-  //       element.season,
-  //       element.number
-  //     )}`;
-  //     if (dropDownValue === "") {
-  //       showAllCards(list);
-  //     } else if (elementTitle == dropDownValue) {
-  //       showCard(element);
-  //     }
-  //   });
-  // });
 });
 
 ///////////////////////////////////////////////////////////////////////////
