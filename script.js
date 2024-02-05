@@ -16,12 +16,38 @@
 
 /////////////LEVEL 300 CLASS PRACTICE////////////////
 const apiUrl = "https://api.tvmaze.com/shows/82/episodes";
+const allShowsUrl = "https://api.tvmaze.com/shows ";
 let dataObject;
 
+//////////////////////////////
+/////////////////////////////
+
+// Function to show the popup
+function showPopup() {
+  document.getElementById("popup-container").style.display = "flex"; // Display the popup container
+}
+
+// Function to hide the popup
+function hidePopup() {
+  document.getElementById("popup-container").style.display = "none"; // Hide the popup container
+}
+
+function popupError(errorMessage) {
+  document.getElementById("main").innerHTML = `<i
+            class="fas fa-exclamation-triangle"
+            style="font-size: 48px; color: red; display: none"
+          ></i>
+          <p>Error happened while loading the page: ${errorMessage}</p>`;
+  //document.getElementById("popup-container").style.display = "flex"; // Display the popup container
+}
 // Make a GET request using the Fetch API
 async function fetchedData() {
   try {
-    let response = await fetch(apiUrl);
+    showPopup();
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    let response = await fetch(allShowsUrl);
     if (!response.ok) {
       throw new Error(`Error happened!${response.status}`);
     }
@@ -29,7 +55,10 @@ async function fetchedData() {
     list = data;
     return data;
   } catch (error) {
-    throw console.error("An error hapened during the fetch!");
+    console.error("An error hapened during the fetch!");
+    popupError(error.message);
+  } finally {
+    hidePopup();
   }
 }
 
@@ -89,8 +118,9 @@ fetchedData().then(() => {
   try {
     showAllCards(list);
     createDropDownList();
-  } catch {
-    console.log("an error happened during fetching the data");
+  } catch (error) {
+    console.log("an error happened during fetching the data", error.message);
+    popupError(error.message);
   }
 });
 
