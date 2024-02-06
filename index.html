@@ -28,13 +28,6 @@
     </header>
 
     <main id="main">
-      <!-- <div id="spinner-container">
-        <div id="spinner">
-          <i class="fa fa-spinner fa-spin" style="font-size: 60px"></i
-          >Loading...
-        </div>
-      </div> -->
-      <div id="root"></div>
       <!-- Popup Window -->
       <div id="popup-container" style="display: none">
         <div id="popup">
@@ -66,15 +59,21 @@
         </section>
       </template>
       <aside id="root"></aside>
+      
       <aside id="side-bar">
         <!-- section of drop-down menue -->
         <section id="search-section">
-          <label for="episode-drop-down">Choose your Episode:</label>
+          <label for="episode-drop-down">Find All The Shows:</label>
           <select name="episodes" id="episode-drop-down">
-            <option value="">Show All Episodes</option>
+            <option value="">Show All Series</option>
           </select>
         </section>
-        <section>
+        <section id="all-shows">
+          <label for="Shows">Choose your Episode:</label>
+          <select name="Shows" id="show-drop-down">
+            <option value="">Show All Episodes</option>
+        </section>
+        <!-- <section>
           <div>
             <img
               src="https://www.manorandashburyresorts.co.uk/wp-content/uploads/2023/12/20-OFF-800x800.gif"
@@ -89,7 +88,7 @@
               receive the latest news from the box office and Hollywood.
             </p>
           </div>
-        </section>
+        </section> -->
       </aside>
     </main>
     <footer id="footer"></footer>

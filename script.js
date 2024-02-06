@@ -41,6 +41,7 @@ function popupError(errorMessage) {
   //document.getElementById("popup-container").style.display = "flex"; // Display the popup container
 }
 // Make a GET request using the Fetch API
+let list;
 async function fetchedData() {
   try {
     showPopup();
@@ -53,6 +54,8 @@ async function fetchedData() {
     }
     let data = await response.json();
     list = data;
+    list.sort(sortingArray);
+
     return data;
   } catch (error) {
     console.error("An error hapened during the fetch!");
@@ -62,21 +65,36 @@ async function fetchedData() {
   }
 }
 
+/////////////////////sort the returned array of all shows alphabetically/////////////
+function sortingArray(a, b) {
+  let nameA = a.name.toLowerCase();
+  let nameB = b.name.toLowerCase();
+  if (nameA < nameB) {
+    return -1;
+  }
+  if (nameA > nameB) {
+    return 1;
+  }
+  return 0;
+}
+
 /////////////////////////////
 /////////////////////
 
 function padStartEpisodes(season, episode) {
-  if (season < 10) {
+  if (season < 10 && !undefined) {
     season = season.toString().padStart(2, "0");
   }
-  if (episode < 10) {
+  if (episode < 10 && !undefined) {
     episode = episode.toString().padStart(2, "0");
+  }
+  // it returns nothing if season and episodes not available as in the shows we don't how season and episodes
+  if (episode == undefined || season == undefined) {
+    return "";
   }
   let seasonEpisode = `-S${season}E${episode}`;
   return seasonEpisode;
 }
-
-let list;
 
 // this function create only a card . like template card and by using a loop we can create all the cards
 // based on the available objects in tha list array
@@ -117,7 +135,7 @@ function showAllCards(list) {
 fetchedData().then(() => {
   try {
     showAllCards(list);
-    createDropDownList();
+    createDropDownList(list, showDropDown);
   } catch (error) {
     console.log("an error happened during fetching the data", error.message);
     popupError(error.message);
@@ -126,19 +144,23 @@ fetchedData().then(() => {
 
 //comment to start level 200 by bkarimi
 
-const dropDown = document.querySelector("#episode-drop-down");
-function createDropDownList() {
+const showDropDown = document.querySelector("#episode-drop-down");
+function createDropDownList(list, select) {
   for (let item of list) {
     const option = document.createElement("option");
     const episode = padStartEpisodes(item.season, item.number);
     option.value = `${item.name}${episode}`;
     option.textContent = `${item.name}${episode}`;
-    dropDown.appendChild(option);
+    select.appendChild(option);
   }
 }
 
-dropDown.addEventListener("change", () => {
-  const dropDownValue = dropDown.value;
+let dropDownValue;
+let linkToFetch;
+showDropDown.addEventListener("change", () => {
+  dropDownValue = showDropDown.value;
+  linkToFetch = getLink(dropDownValue);
+  //console.log(linkToFetch, "this is link");
   const foundItem = list.find((episode) => {
     const elementTitle = `${episode.name}${padStartEpisodes(
       episode.season,
@@ -152,6 +174,13 @@ dropDown.addEventListener("change", () => {
   } else {
     showAllCards(list);
   }
+  const episodeDropDown = document.querySelector("#show-drop-down");
+  dynamicFetch(linkToFetch).then(() => {
+    const initialOption = '<option value="">Show All Episodes</option>';
+    console.log(newList, "new list inside the event");
+    episodeDropDown.innerHTML = initialOption;
+    createDropDownList(newList, episodeDropDown);
+  });
 });
 
 ///////////////////////////////////////////////////////////////////////////
@@ -204,3 +233,65 @@ searchBox.addEventListener("input", () => {
   }
   rootAside.prepend(searchCounter);
 });
+
+// const seriName = showDropDown.value;
+// function findName(seriName) {
+//   return list.find((obj) => obj.name === seriName);
+// }
+//console.log(findName(list));
+
+//////////////Level 400 ----//////////////
+
+// Define the getLink function
+function getLink(dropDownValue) {
+  let id;
+  list.find((object) => {
+    if (object.name === dropDownValue && dropDownValue != "") {
+      id = object.id;
+      return true;
+      // Exit the loop when the object is found
+    }
+  });
+
+  if (id) {
+    const tvShowUrl = `https://api.tvmaze.com/shows/${id}/episodes`;
+    return tvShowUrl;
+  } else {
+    throw new Error(
+      `TV show with name '${dropDownValue}' not found in the list.`
+    );
+  }
+}
+
+// Set up event listener for dropdown change
+const episodeDropDown = document.querySelector("#show-drop-down");
+
+let episodeList;
+async function fetchEpisode(link) {
+  try {
+    let response = await fetch(link);
+    if (!response.ok) {
+      throw new Error("error happened for fetch episodes");
+    }
+    let data = response.json();
+    episodeList = data;
+  } catch (error) {
+    console.error("error for fetch episode list", error.message);
+  }
+}
+let newList;
+async function dynamicFetch(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error("dynamic fetch error in response");
+    }
+    data = await response.json();
+    newList = data;
+    return data;
+  } catch (error) {
+    console.error("Error happened in dynamic Fetch", error.message);
+  }
+}
+
+// console.log(newList, "this is new list");
