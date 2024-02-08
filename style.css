@@ -221,3 +221,20 @@ aside:last-child{
   border-radius: 5px;
 }
 /* ///////////////////////////////// */
+
+/* /* styling episodes for each show */
+#episode-container{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color:rgb(82, 14, 146);
+}
+
+.episode-card{
+  background-color: red;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.episode-card>h3{
+  align-self: flex-start;
+  font-size: larger;
+}

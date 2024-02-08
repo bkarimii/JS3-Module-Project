@@ -336,10 +336,14 @@ const sectionOfEpisodes = document.getElementById("episode-container");
 sectionOfEpisodes.style.display = "none";
 
 /////updating show Card function for episodes///////////
-function showCardUpdated(item, parent) {
+function showCardUpdated(item) {
   //cloning the template for the cards
   const temp = document.getElementById("film-card");
   const card = temp.content.cloneNode(true);
+
+  //adding another class for episode card
+  const section = card.querySelector(".card");
+  section.classList.add("episode-card");
 
   // using the padstart function to nominating episodes like -S01E01
   const episode = padStartEpisodes(item.season, item.number);
@@ -356,6 +360,7 @@ function showCardUpdated(item, parent) {
 
   const filmSummary = card.querySelector("#film-summary");
   filmSummary.innerHTML = `<summary class='film-summary-tag'>Movie summary:</summary> ${item.summary}`;
+  card.class = "episode-card";
   sectionOfEpisodes.style.display = "block";
   sectionOfEpisodes.appendChild(card);
 
