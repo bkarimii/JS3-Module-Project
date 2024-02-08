@@ -17,7 +17,7 @@
 /////////////LEVEL 300 CLASS PRACTICE////////////////
 const apiUrl = "https://api.tvmaze.com/shows/82/episodes";
 const allShowsUrl = "https://api.tvmaze.com/shows ";
-let dataObject;
+// let dataObject;
 
 //////////////////////////////
 /////////////////////////////
@@ -134,7 +134,8 @@ function showAllCards(list) {
 
 fetchedData().then(() => {
   try {
-    showAllCards(list);
+    //showAllCards(list);
+    showAllCardsUpdated(list, rootAside);
     createDropDownList(list, showDropDown);
   } catch (error) {
     console.log("an error happened during fetching the data", error.message);
@@ -144,7 +145,6 @@ fetchedData().then(() => {
 
 //comment to start level 200 by bkarimi
 
-const showDropDown = document.querySelector("#episode-drop-down");
 function createDropDownList(list, select) {
   for (let item of list) {
     const option = document.createElement("option");
@@ -157,6 +157,11 @@ function createDropDownList(list, select) {
 
 let dropDownValue;
 let linkToFetch;
+let secondDropValue;
+//second drop box episodes
+const episodeDropDown = document.querySelector("#show-drop-down");
+//first drop box for all shows
+const showDropDown = document.querySelector("#episode-drop-down");
 showDropDown.addEventListener("change", () => {
   dropDownValue = showDropDown.value;
   linkToFetch = getLink(dropDownValue);
@@ -166,6 +171,7 @@ showDropDown.addEventListener("change", () => {
       episode.season,
       episode.number
     )}`;
+    //console.log(elementTitle, "elementTitle");
     return elementTitle === dropDownValue;
   });
   document.getElementById("root").innerHTML = "";
@@ -173,18 +179,55 @@ showDropDown.addEventListener("change", () => {
     showCard(foundItem);
   } else {
     showAllCards(list);
+    //episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
   }
-  const episodeDropDown = document.querySelector("#show-drop-down");
+
   dynamicFetch(linkToFetch).then(() => {
+    //second dropBox for episodes
+
+    secondDropValue = episodeDropDown.value;
+    console.log("-secondDropDown-------->", secondDropValue);
+
     const initialOption = '<option value="">Show All Episodes</option>';
-    console.log(newList, "new list inside the event");
+    //console.log(newList, "new list inside the event");
     episodeDropDown.innerHTML = initialOption;
     createDropDownList(newList, episodeDropDown);
+    const episodesSection = document.createElement("section");
+    episodesSection.id = "episode-of-each-series";
+    showAllCardsUpdated(newList, episodesSection);
+    if (dropDownValue == "") {
+      episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
+    }
   });
 });
 
 ///////////////////////////////////////////////////////////////////////////
+
+/////////add event listener for the second dropdown///////////
+//Second drop down
+episodeDropDown.addEventListener("change", () => {
+  secondDropValue = episodeDropDown.value;
+  console.log(secondDropValue, "=============");
+  const foundItem = newList.find((episode) => {
+    const elementTitle = `${episode.name}${padStartEpisodes(
+      episode.season,
+      episode.number
+    )}`;
+    //console.log(elementTitle, "elementTitle");
+    return elementTitle === secondDropValue;
+  });
+  document.getElementById("root").innerHTML = "";
+  if (foundItem) {
+    showCard(foundItem);
+  } else {
+    showAllCards(newList);
+    //episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
+  }
+});
 /////////////////////////////////////////////////////////////////////
+//
+//
+//
 //
 // geting search box from the page
 const searchBox = document.getElementById("search-box");
@@ -234,12 +277,6 @@ searchBox.addEventListener("input", () => {
   rootAside.prepend(searchCounter);
 });
 
-// const seriName = showDropDown.value;
-// function findName(seriName) {
-//   return list.find((obj) => obj.name === seriName);
-// }
-//console.log(findName(list));
-
 //////////////Level 400 ----//////////////
 
 // Define the getLink function
@@ -257,28 +294,27 @@ function getLink(dropDownValue) {
     const tvShowUrl = `https://api.tvmaze.com/shows/${id}/episodes`;
     return tvShowUrl;
   } else {
-    throw new Error(
-      `TV show with name '${dropDownValue}' not found in the list.`
-    );
+    return "https://api.tvmaze.com/shows ";
   }
 }
 
 // Set up event listener for dropdown change
-const episodeDropDown = document.querySelector("#show-drop-down");
+// const episodeDropDown = document.querySelector("#show-drop-down");
 
-let episodeList;
-async function fetchEpisode(link) {
-  try {
-    let response = await fetch(link);
-    if (!response.ok) {
-      throw new Error("error happened for fetch episodes");
-    }
-    let data = response.json();
-    episodeList = data;
-  } catch (error) {
-    console.error("error for fetch episode list", error.message);
-  }
-}
+// let episodeList;
+// async function fetchEpisode(link) {
+//   try {
+//     let response = await fetch(link);
+//     if (!response.ok) {
+//       throw new Error("error happened for fetch episodes");
+//     }
+//     let data = response.json();
+//     episodeList = data;
+//   } catch (error) {
+//     console.error("error for fetch episode list", error.message);
+//   }
+// }
+
 let newList;
 async function dynamicFetch(url) {
   try {
@@ -295,3 +331,34 @@ async function dynamicFetch(url) {
 }
 
 // console.log(newList, "this is new list");
+
+/////updating show Card function for episodes///////////
+function showCardUpdated(item, parent) {
+  //cloning the template for the cards
+  const temp = document.getElementById("film-card");
+  const card = temp.content.cloneNode(true);
+
+  // using the padstart function to nominating episodes like -S01E01
+  const episode = padStartEpisodes(item.season, item.number);
+  const filmTitle = card.querySelector("#film-title");
+  filmTitle.textContent = `${item.name}${episode}`;
+
+  const filmImage = card.querySelector("#film-img");
+  filmImage.src = item.image.medium;
+  const alt = `image of ${episode} of ${item.name}`;
+  filmImage.setAttribute("alt", alt);
+
+  const duration = card.querySelector("#duration");
+  duration.textContent = `Duration: ${item.runtime}`;
+
+  const filmSummary = card.querySelector("#film-summary");
+  filmSummary.innerHTML = `<summary class='film-summary-tag'>Movie summary:</summary> ${item.summary}`;
+
+  return parent.appendChild(card);
+}
+
+function showAllCardsUpdated(list, parent) {
+  for (let item of list) {
+    showCard(item, parent);
+  }
+}
