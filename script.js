@@ -164,18 +164,11 @@ const showDropDown = document.querySelector("#episode-drop-down");
 showDropDown.addEventListener("change", () => {
   dropDownValue = showDropDown.value;
   linkToFetch = getLink(dropDownValue);
-  //console.log(linkToFetch, "this is link");
-  const foundItem = list.find((episode) => {
-    const elementTitle = `${episode.name}${padStartEpisodes(
-      episode.season,
-      episode.number
-    )}`;
-    //console.log(elementTitle, "elementTitle");
-    return elementTitle === dropDownValue;
-  });
-  // rootAside.innerHTML = "";
+  const foundItem = findEpisodeByTitle(list, dropDownValue);
   rootAside.innerHTML = "";
   sectionOfEpisodes.innerHTML = "";
+  // clear the search box by any change in the drop down menue
+  searchBox.value = "";
   if (foundItem) {
     showCard(foundItem);
   } else {
@@ -185,9 +178,9 @@ showDropDown.addEventListener("change", () => {
   if (linkToFetch) {
     dynamicFetch(linkToFetch).then(() => {
       //second dropBox for episodes
-      console.log(linkToFetch);
+      // console.log(linkToFetch);
       secondDropValue = episodeDropDown.value;
-      console.log("-secondDropDown-------->", secondDropValue);
+      // console.log("-secondDropDown-------->", secondDropValue);
 
       const initialOption = '<option value="">Show All Episodes</option>';
       //console.log(newList, "new list inside the event");
@@ -195,12 +188,11 @@ showDropDown.addEventListener("change", () => {
       createDropDownList(newList, episodeDropDown);
       // const episodesSection = document.createElement("section");
       // episodesSection.id = "episode-of-each-series";
-      console.log(newList, "newList 2222");
+
       showAllCardsUpdated(newList);
       // showAllCards(newList);
     });
   } else {
-    console.log(linkToFetch);
     if (dropDownValue == "") {
       episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
       newList = [];
@@ -208,32 +200,35 @@ showDropDown.addEventListener("change", () => {
   }
 });
 
-///////////////////////////////////////////////////////////////////////////
-
-/////////add event listener for the second dropdown///////////
-//Second drop down
-episodeDropDown.addEventListener("change", () => {
-  secondDropValue = episodeDropDown.value;
-  // console.log(secondDropValue, "=============");
-  const foundEpisode = newList.find((episode) => {
+/////////////////////////////this function find episode or show by title or drop down value//////////////////////////////////////////////
+function findEpisodeByTitle(episodeList, title) {
+  return episodeList.find((episode) => {
     const elementTitle = `${episode.name}${padStartEpisodes(
       episode.season,
       episode.number
     )}`;
-    //console.log(elementTitle, "elementTitle");
-    return elementTitle === secondDropValue;
+    return elementTitle === title;
   });
+}
+/////////////////////////////////////////////////////////////
+/////////add event listener for the second dropdown///////////
+//Second drop down
+episodeDropDown.addEventListener("change", () => {
+  secondDropValue = episodeDropDown.value;
 
+  const foundEpisode = findEpisodeByTitle(newList, secondDropValue);
   rootAside.innerHTML = "";
   sectionOfEpisodes.innerHTML = "";
+  searchBox.value = "";
 
   // find the item to be shown on the top for each episode , in other word based on the value in the first dropdown
   //we'll find the object index to show the cover of each series on the top of episodes
   let indexOfItemForCard = findIndexByName(dropDownValue, list);
   if (foundEpisode) {
-    let itemForCard = findIndexByName(dropDownValue, list);
-    showCard(list[indexOfItemForCard]);
-    console.log(dropDownValue, "dropvalueXXX");
+    // let itemForCard = findIndexByName(dropDownValue, list);
+    // showCard(list[indexOfItemForCard]);
+    showCard(findEpisodeByTitle(list, dropDownValue));
+    //console.log(dropDownValue, "dropvalueXXX");
     showCardUpdated(foundEpisode);
   } else {
     showCard(list[indexOfItemForCard]);
@@ -261,30 +256,74 @@ searchBox.addEventListener("input", () => {
   resultCounter = 0;
 
   if (searchBoxvalue === "") {
-    document.getElementById("root").innerHTML = "";
-    showAllCards(list);
-    searchCounter.innerHTML = "";
-    searchCounter.style.display = "none";
+    //if search box is empty and drop down is empty display all the shows
+    // console.log(episodeDropDown.value, "valueeee");
+    if (dropDownValue == "" && secondDropValue == "") {
+      rootAside.innerHTML = "";
+      showAllCards(list);
+      searchCounter.innerHTML = "";
+      searchCounter.style.display = "none";
+    } else if (dropDownValue != "" && episodeDropDown.value == "") {
+      rootAside.innerHTML = "";
+
+      // let indexOfItemForCard = findIndexByName(dropDownValue, list);
+      const ittem = findEpisodeByTitle(list, dropDownValue);
+      showCard(ittem);
+      showAllCardsUpdated(newList);
+      searchCounter.style.display = "none";
+    } else if (dropDownValue != "" && episodeDropDown.value != "") {
+      rootAside.innerHTML = "";
+
+      sectionOfEpisodes.innerHTML = "";
+
+      const itemList = findEpisodeByTitle(list, dropDownValue);
+      const itemNewList = findEpisodeByTitle(newList, secondDropValue);
+      showCard(itemList);
+      showCardUpdated(itemNewList);
+    }
   } else {
-    list.forEach((element) => {
-      // set name and summary to lower case for using include method
-      const elementNamelowerCase = element.name.toLowerCase();
-      const elementSummaryLowerCase = element.summary.toLowerCase();
+    if (dropDownValue == "") {
+      list.forEach((element) => {
+        // set name and summary to lower case for using include method
+        const elementNamelowerCase = element.name.toLowerCase();
+        const elementSummaryLowerCase = element.summary.toLowerCase();
 
-      // check for including
-      const includeName = elementNamelowerCase.includes(searchBoxvalue);
-      const includeSummary = elementSummaryLowerCase.includes(searchBoxvalue);
+        // check for including
+        const includeName = elementNamelowerCase.includes(searchBoxvalue);
+        const includeSummary = elementSummaryLowerCase.includes(searchBoxvalue);
 
-      if (includeName || includeSummary) {
-        resultCounter++;
-        if (clearPage) {
-          document.getElementById("root").innerHTML = "";
-          clearPage = false;
+        if (includeName || includeSummary) {
+          resultCounter++;
+          if (clearPage) {
+            rootAside.innerHTML = "";
+            clearPage = false;
+          }
+          // rootAside.innerHTML = "";
+          showCard(element);
         }
+      });
+    }
+    if (dropDownValue != "") {
+      newList.forEach((element) => {
+        // set name and summary to lower case for using include method
+        const elementNamelowerCase = element.name.toLowerCase();
+        const elementSummaryLowerCase = element.summary.toLowerCase();
 
-        showCard(element);
-      }
-    });
+        // check for including
+        const includeName = elementNamelowerCase.includes(searchBoxvalue);
+        const includeSummary = elementSummaryLowerCase.includes(searchBoxvalue);
+
+        if (includeName || includeSummary) {
+          resultCounter++;
+          if (clearPage) {
+            rootAside.innerHTML = "";
+            clearPage = false;
+          }
+          // rootAside.innerHTML = "";
+          showCard(element);
+        }
+      });
+    }
 
     // Display the search counter
     searchCounter.innerHTML = `${resultCounter} item${
@@ -292,7 +331,9 @@ searchBox.addEventListener("input", () => {
     } matched the search`;
     searchCounter.style.display = "inline-block";
   }
+
   rootAside.prepend(searchCounter);
+  //end of search box event listener
 });
 
 //////////////Level 400 ----//////////////
@@ -381,119 +422,3 @@ function findIndexByName(n, array) {
   });
   return indexOfObject;
 }
-
-// arr = [
-//   {
-//     id: 1,
-//     url: "https://www.tvmaze.com/shows/1/under-the-dome",
-//     name: "Domeyt",
-//     type: "Scripted",
-//     language: "English",
-//     genres: ["Drama", "Science-Fiction", "Thriller"],
-//     status: "Ended",
-//     runtime: 60,
-//     averageRuntime: 60,
-//     premiered: "2013-06-24",
-//     ended: "2015-09-10",
-//     officialSite: "http://www.cbs.com/shows/under-the-dome/",
-//     schedule: {
-//       time: "22:00",
-//       days: ["Thursday"],
-//     },
-//     rating: {
-//       average: 6.5,
-//     },
-//     weight: 99,
-//     network: {
-//       id: 2,
-//       name: "CBS",
-//       country: {
-//         name: "United States",
-//         code: "US",
-//         timezone: "America/New_York",
-//       },
-//       officialSite: "https://www.cbs.com/",
-//     },
-//     webChannel: null,
-//     dvdCountry: null,
-//     externals: {
-//       tvrage: 25988,
-//       thetvdb: 264492,
-//       imdb: "tt1553656",
-//     },
-//     image: {
-//       medium:
-//         "https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg",
-//       original:
-//         "https://static.tvmaze.com/uploads/images/original_untouched/81/202627.jpg",
-//     },
-//     summary:
-//       "<p><b>Under the Dome</b> is the story of a small town that is suddenly and inexplicably sealed off from the rest of the world by an enormous transparent dome. The town's inhabitants must deal with surviving the post-apocalyptic conditions while searching for answers about the dome, where it came from and if and when it will go away.</p>",
-//     updated: 1704794065,
-//     _links: {
-//       self: {
-//         href: "https://api.tvmaze.com/shows/1",
-//       },
-//       previousepisode: {
-//         href: "https://api.tvmaze.com/episodes/185054",
-//       },
-//     },
-//   },
-//   {
-//     id: 1,
-//     url: "https://www.tvmaze.com/shows/1/under-the-dome",
-//     name: "Dome",
-//     type: "Scripted",
-//     language: "English",
-//     genres: ["Drama", "Science-Fiction", "Thriller"],
-//     status: "Ended",
-//     runtime: 60,
-//     averageRuntime: 60,
-//     premiered: "2013-06-24",
-//     ended: "2015-09-10",
-//     officialSite: "http://www.cbs.com/shows/under-the-dome/",
-//     schedule: {
-//       time: "22:00",
-//       days: ["Thursday"],
-//     },
-//     rating: {
-//       average: 6.5,
-//     },
-//     weight: 99,
-//     network: {
-//       id: 2,
-//       name: "CBS",
-//       country: {
-//         name: "United States",
-//         code: "US",
-//         timezone: "America/New_York",
-//       },
-//       officialSite: "https://www.cbs.com/",
-//     },
-//     webChannel: null,
-//     dvdCountry: null,
-//     externals: {
-//       tvrage: 25988,
-//       thetvdb: 264492,
-//       imdb: "tt1553656",
-//     },
-//     image: {
-//       medium:
-//         "https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg",
-//       original:
-//         "https://static.tvmaze.com/uploads/images/original_untouched/81/202627.jpg",
-//     },
-//     summary:
-//       "<p><b>Under the Dome</b> is the story of a small town that is suddenly and inexplicably sealed off from the rest of the world by an enormous transparent dome. The town's inhabitants must deal with surviving the post-apocalyptic conditions while searching for answers about the dome, where it came from and if and when it will go away.</p>",
-//     updated: 1704794065,
-//     _links: {
-//       self: {
-//         href: "https://api.tvmaze.com/shows/1",
-//       },
-//       previousepisode: {
-//         href: "https://api.tvmaze.com/episodes/185054",
-//       },
-//     },
-//   },
-// ];
-// console.log(findIndexByName("Dome", arr), "test for index");

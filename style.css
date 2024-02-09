@@ -226,13 +226,15 @@ aside:last-child{
 #episode-container{
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background-color:rgb(82, 14, 146);
+  background-color:rgb(86 4 86);
 }
 
 .episode-card{
-  background-color: red;
+  background-color: rgb(102, 4, 102);
   display: flex;
   flex-direction: column-reverse;
+  border: 2px solid black;
+  box-shadow: inset;
 }
 .episode-card>h3{
   align-self: flex-start;
