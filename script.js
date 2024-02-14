@@ -16,7 +16,7 @@
 
 /////////////LEVEL 300 CLASS PRACTICE////////////////
 const apiUrl = "https://api.tvmaze.com/shows/82/episodes";
-const allShowsUrl = "https://api.tvmaze.com/shows ";
+const allShowsUrl = "https://api.tvmaze.com/shows";
 let showName;
 
 // Function to show the popup
@@ -153,9 +153,9 @@ function createDropDownList(list, select) {
   }
 }
 
-let dropDownValue;
+let dropDownValue = "";
 let linkToFetch;
-let secondDropValue;
+let secondDropValue = "";
 
 //second drop box episodes
 const episodeDropDown = document.querySelector("#show-drop-down");
@@ -223,15 +223,15 @@ episodeDropDown.addEventListener("change", () => {
 
   // find the item to be shown on the top for each episode , in other word based on the value in the first dropdown
   //we'll find the object index to show the cover of each series on the top of episodes
-  let indexOfItemForCard = findIndexByName(dropDownValue, list);
+  // let indexOfItemForCard = findIndexByName(dropDownValue, list);
+  showCard(findEpisodeByTitle(list, dropDownValue));
   if (foundEpisode) {
     // let itemForCard = findIndexByName(dropDownValue, list);
     // showCard(list[indexOfItemForCard]);
-    showCard(findEpisodeByTitle(list, dropDownValue));
     //console.log(dropDownValue, "dropvalueXXX");
-    showCardUpdated(foundEpisode);
+    episodeCard(foundEpisode);
   } else {
-    showCard(list[indexOfItemForCard]);
+    // showCard(list[indexOfItemForCard]);
     showAllCardsUpdated(newList);
     //episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
   }
@@ -279,7 +279,7 @@ searchBox.addEventListener("input", () => {
       const itemList = findEpisodeByTitle(list, dropDownValue);
       const itemNewList = findEpisodeByTitle(newList, secondDropValue);
       showCard(itemList);
-      showCardUpdated(itemNewList);
+      episodeCard(itemNewList);
     }
   } else {
     if (dropDownValue == "") {
@@ -377,7 +377,7 @@ const sectionOfEpisodes = document.getElementById("episode-container");
 sectionOfEpisodes.style.display = "none";
 
 /////updating show Card function for episodes///////////
-function showCardUpdated(item) {
+function episodeCard(item) {
   //cloning the template for the cards
   const temp = document.getElementById("film-card");
   const card = temp.content.cloneNode(true);
@@ -410,15 +410,15 @@ function showCardUpdated(item) {
 
 function showAllCardsUpdated(list) {
   for (let item of list) {
-    showCardUpdated(item);
+    episodeCard(item);
   }
 }
 
 /// this function finds index of the objects in the fetched array base on the name property in the object
 
-function findIndexByName(n, array) {
-  const indexOfObject = array.findIndex((item) => {
-    return item.name == n;
-  });
-  return indexOfObject;
-}
+// function findIndexByName(n, array) {
+//   const indexOfObject = array.findIndex((item) => {
+//     return item.name == n;
+//   });
+//   return indexOfObject;
+// }
