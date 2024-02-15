@@ -35,7 +35,7 @@
           <p>Page Is Loading...</p>
         </div>
       </div>
-
+      <button id="all-show-button">Display All Shows</button>
       <!-- ////////////////////// -->
       <div id="search-box-container">
         <input
@@ -49,19 +49,24 @@
       <template id="film-card">
         <section class="card">
           <div class="explaination">
-            <h3 id="film-title">film Title and Episode</h3>
-            <p id="duration"></p>
-            <details class="details" id="film-summary"></details>
+            <h2 id="film-title">film Title and Episode</h2>
+            <div>
+              <img id="film-img" />
+              <details class="details" id="film-summary"></details>
+            </div>
           </div>
           <div class="img">
-            <img id="film-img" />
+            <p id="film-rate">rated</p>
+            <p id="film-genre">Gener</p>
+            <p id="film-status">status</p>
+            <p id="duration">runtime</p>
           </div>
         </section>
       </template>
       <aside id="root">
         <section id="episode-container"></section>
       </aside>
-        
+
       <aside id="side-bar">
         <!-- section of drop-down menue -->
         <section id="search-section">
@@ -70,11 +75,11 @@
             <option value="">Show All Series</option>
           </select>
         </section>
-        <section id="all-shows">
+        <!-- <section id="all-shows">
           <label for="Shows">Choose your Episode:</label>
           <select name="Shows" id="show-drop-down">
             <option value="">Show All Episodes</option>
-        </section>
+        </section> -->
         <!-- <section>
           <div>
             <img
@@ -102,5 +107,3 @@
     <script src="script.js"></script>
   </body>
 </html>
-
-
