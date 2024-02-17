@@ -228,6 +228,7 @@ showDropDown.addEventListener("change", () => {
 /////////////////////////////this function find episode or show by title or drop down value//////////////////////////////////////////////
 function findEpisodeByTitle(episodeList, title) {
   return episodeList.find((episode) => {
+    //test pull request 
     const elementTitle = `${episode.name}${padStartEpisodes(
       episode.season,
       episode.number
