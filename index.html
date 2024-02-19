@@ -38,18 +38,23 @@
       <button id="all-show-button">Display All Shows</button>
       <!-- ////////////////////// -->
       <div id="search-box-container">
-        <input
-          type="text"
-          id="search-box"
-          placeholder="Search Through the episodes and summary"
-        />
-
-        <span id="search-counting"> </span>
+        <div id="search-box-and-fa-icon">
+          <input
+            type="text"
+            id="search-box"
+            placeholder="Search Through the episodes and summary"
+          />
+          <span id="clear-search-box"
+            ><i class="fa fa-times-circle" style="font-size: 24px"></i
+          ></span>
+        </div>
+        <button class="fa fa-search search"></button>
+        <!-- <span id="search-counting"> </span> -->
       </div>
       <template id="film-card">
         <section class="card">
           <div class="explaination">
-            <h2 id="film-title">film Title and Episode</h2>
+            <h2 id="film-title"></h2>
             <div>
               <img id="film-img" />
               <details class="details" id="film-summary"></details>

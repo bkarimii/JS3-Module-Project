@@ -13,6 +13,65 @@
 //window.onload = setup;
 
 //const card = document.getElementById("film-card").content.cloneNode(true);
+//
+//
+//
+//
+//
+////////FUNCTION DEFINITIONS \\\\\\\\\\\\
+const rootAside = document.getElementById("root");
+
+function showCard(item) {
+  //cloning the template for the cards
+  const temp = document.getElementById("film-card");
+  const card = temp.content.cloneNode(true);
+
+  // using the padstart function to nominating episodes as we are asked to do
+  const episode = padStartEpisodes(item.season, item.number);
+  const filmTitle = card.getElementById("film-title");
+  filmTitle.textContent = `${item.name}${episode}`;
+
+  // // =================================
+
+  // // ==========================
+
+  const filmImage = card.getElementById("film-img");
+  if (item.image.medium) {
+    filmImage.src = item.image.medium;
+    const alt = `image of ${episode} of ${item.name}`;
+    filmImage.setAttribute("alt", alt);
+  } else {
+    filmImage.src = item.image;
+    const alt = `image of ${episode} of ${item.name}`;
+    filmImage.setAttribute("alt", alt);
+  }
+
+  const duration = card.getElementById("duration");
+  duration.textContent = `Duration: ${item.runtime}`;
+
+  const rate = card.getElementById("film-rate");
+  rate.textContent = `Rate: ${item.rating.average}`;
+
+  const status = card.getElementById("film-status");
+  status.textContent = `Status: ${item.status}`;
+  //============================================
+  const filmGenre = card.getElementById("film-genre");
+  content = item.genres.join(" | ");
+  filmGenre.textContent = `Genre: ${content}`;
+
+  //================================================
+
+  const filmSummary = card.getElementById("film-summary");
+  filmSummary.innerHTML = `<summary class='film-summary-tag'>Movie summary:</summary> +${item.summary}`;
+
+  rootAside.appendChild(card);
+}
+
+function showAllCards(list) {
+  for (let item of list) {
+    showCard(item);
+  }
+}
 
 /////////////LEVEL 300 CLASS PRACTICE////////////////
 const apiUrl = "https://api.tvmaze.com/shows/82/episodes";
@@ -63,6 +122,12 @@ async function fetchedData() {
   }
 }
 
+const fetchByTitle = (title) => {
+  return list.filter((item) => {
+    item.name == title;
+  });
+};
+
 /////////////////////sort the returned array of all shows alphabetically/////////////
 function sortingArray(a, b) {
   let nameA = a.name.toLowerCase();
@@ -97,56 +162,7 @@ function padStartEpisodes(season, episode) {
 // this function create only a card . like template card and by using a loop we can create all the cards
 // based on the available objects in tha list array
 
-const rootAside = document.getElementById("root");
-
-function showCard(item) {
-  //cloning the template for the cards
-  const temp = document.getElementById("film-card");
-  const card = temp.content.cloneNode(true);
-
-  // using the padstart function to nominating episodes as we are asked to do
-  const episode = padStartEpisodes(item.season, item.number);
-  const filmTitle = card.getElementById("film-title");
-  filmTitle.textContent = `${item.name}${episode}`;
-
-  // // ======================
-  // filmTitle.addEventListener("click", () => {
-  //   console.log(filmTitle.textContent);
-  // });
-  // // ==========================
-
-  const filmImage = card.getElementById("film-img");
-  filmImage.src = item.image.medium;
-  const alt = `image of ${episode} of ${item.name}`;
-  filmImage.setAttribute("alt", alt);
-
-  const duration = card.getElementById("duration");
-  duration.textContent = `Duration: ${item.runtime}`;
-
-  const rate = card.getElementById("film-rate");
-  rate.textContent = `Rate: ${item.rating.average}`;
-
-  const status = card.getElementById("film-status");
-  status.textContent = `Status: ${item.status}`;
-  //============================================
-  const filmGenre = card.getElementById("film-genre");
-  content = item.genres.join(" | ");
-  filmGenre.textContent = `Genre: ${content}`;
-
-  //================================================
-
-  const filmSummary = card.getElementById("film-summary");
-  filmSummary.innerHTML = `<summary class='film-summary-tag'>Movie summary:</summary> +${item.summary}`;
-
-  rootAside.appendChild(card);
-}
-
 // this function reneder all the objects as cards to the page
-function showAllCards(list) {
-  for (let item of list) {
-    showCard(item);
-  }
-}
 
 fetchedData().then(() => {
   try {
@@ -166,7 +182,12 @@ function createDropDownList(list, select) {
     const option = document.createElement("option");
     const episode = padStartEpisodes(item.season, item.number);
     option.value = `${item.name}${episode}`;
-    //option.value = `${item.name}`;
+    //option.value = `${item.name}`;// Display the search counter
+    //     searchCounter.innerHTML = `${resultCounter} item${
+    //       resultCounter !== 1 ? "s" : ""
+    //     } matched the search`;
+    //     searchCounter.style.display = "inline-block";
+    //   }
     option.textContent = `${item.name}${episode}`;
     select.appendChild(option);
   }
@@ -185,9 +206,7 @@ showDropDown.addEventListener("change", () => {
   displayShowButton.style.display = "inline-block";
   dropDownValue = showDropDown.value;
   linkToFetch = getLink(dropDownValue);
-  //console.log(dropDownValue, "drop value");
   const foundItem = findEpisodeByTitle(list, dropDownValue);
-  //console.log(foundItem, "----foundItem");
   rootAside.innerHTML = "";
   sectionOfEpisodes.innerHTML = "";
   // clear the search box by any change in the drop down menue
@@ -218,9 +237,9 @@ showDropDown.addEventListener("change", () => {
       const ShowCover = findEpisodeByTitle(list, showValue);
       showCard(ShowCover);
       const episodeItem = findEpisodeByTitle(newList, dropDownValue);
-      console.log(episodeItem);
+      //console.log(episodeItem);
       episodeCard(episodeItem);
-      console.log(showValue, "showvalue inside else part of fetch");
+      //console.log(showValue, "showvalue inside else part of fetch");
     }
   }
 });
@@ -269,101 +288,98 @@ function findEpisodeByTitle(episodeList, title) {
 //
 // geting search box from the page
 const searchBox = document.getElementById("search-box");
+const searchButton = document.querySelector(".search");
 
 //this variable is used inside the event listener to clear the page only once
 let clearPage = true;
 let resultCounter = 0;
 const searchCounter = document.createElement("span");
 searchCounter.id = "display-matched-result";
-searchBox.addEventListener("input", () => {
-  const searchBoxvalue = searchBox.value.trim().toLowerCase();
+searchBoxCleaner = document.getElementById("clear-search-box");
+searchBoxCleaner.addEventListener("click", () => {});
+
+// searchButton.addEventListener("click" )
+searchButton.addEventListener("click", () => {
+  const searchBoxValue = searchBox.value.trim().toLowerCase();
   clearPage = true;
   resultCounter = 0;
-
-  if (searchBoxvalue === "") {
-    //if search box is empty and drop down is empty display all the shows
-    // console.log(episodeDropDown.value, "valueeee");
-    if (dropDownValue == "" && secondDropValue == "") {
+  let isDropDownEmpty = dropDownValue == "";
+  if (isDropDownEmpty) {
+    const filteredShows = searchFunction(list, searchBoxValue);
+    if (filteredShows) {
       rootAside.innerHTML = "";
-      showAllCards(list);
-      searchCounter.innerHTML = "";
-      searchCounter.style.display = "none";
-    } else if (dropDownValue != "" && episodeDropDown.value == "") {
-      rootAside.innerHTML = "";
-
-      // let indexOfItemForCard = findIndexByName(dropDownValue, list);
-      const ittem = findEpisodeByTitle(list, dropDownValue);
-      showCard(ittem);
-      showAllCardsUpdated(newList);
-      searchCounter.style.display = "none";
-    } else if (dropDownValue != "" && episodeDropDown.value != "") {
+      showAllCards(filteredShows);
+      // Display the search counter
+      searchCounter.innerHTML = `${filteredShows.length} item${
+        filteredShows.length !== 1 ? "s" : ""
+      } matched the search`;
+      searchCounter.style.display = "inline-block";
+    }
+  } else {
+    // console.log(newList[0], "<---------------this is new list");
+    const filteredEpisodes = searchFunction(newList, searchBoxValue);
+    if (filteredEpisodes) {
       rootAside.innerHTML = "";
 
       sectionOfEpisodes.innerHTML = "";
-
-      const itemList = findEpisodeByTitle(list, dropDownValue);
-      const itemNewList = findEpisodeByTitle(newList, secondDropValue);
-      showCard(itemList);
-      episodeCard(itemNewList);
+      showAllCardsUpdated(filteredEpisodes);
+      // Display the search counter
+      searchCounter.innerHTML = `${filteredEpisodes.length} item${
+        filteredEpisodes.length !== 1 ? "s" : ""
+      } matched the search`;
+      searchCounter.style.display = "inline-block";
     }
-  } else {
-    if (dropDownValue == "") {
-      list.forEach((element) => {
-        // set name and summary to lower case for using include method
-        const elementNamelowerCase = element.name.toLowerCase();
-        const elementSummaryLowerCase = element.summary.toLowerCase();
-
-        // check for including
-        const includeName = elementNamelowerCase.includes(searchBoxvalue);
-        const includeSummary = elementSummaryLowerCase.includes(searchBoxvalue);
-
-        if (includeName || includeSummary) {
-          resultCounter++;
-          if (clearPage) {
-            rootAside.innerHTML = "";
-            clearPage = false;
-          }
-          // rootAside.innerHTML = "";
-          showCard(element);
-        }
-      });
-    }
-    if (dropDownValue != "") {
-      newList.forEach((element) => {
-        // set name and summary to lower case for using include method
-        const elementNamelowerCase = element.name.toLowerCase();
-        const elementSummaryLowerCase = element.summary.toLowerCase();
-
-        // check for including
-        const includeName = elementNamelowerCase.includes(searchBoxvalue);
-        const includeSummary = elementSummaryLowerCase.includes(searchBoxvalue);
-
-        if (includeName || includeSummary) {
-          resultCounter++;
-          if (clearPage) {
-            rootAside.innerHTML = "";
-            clearPage = false;
-          }
-          // rootAside.innerHTML = "";
-          showCard(element);
-        }
-      });
-    }
-
-    // Display the search counter
-    searchCounter.innerHTML = `${resultCounter} item${
-      resultCounter !== 1 ? "s" : ""
-    } matched the search`;
-    searchCounter.style.display = "inline-block";
   }
 
   rootAside.prepend(searchCounter);
   //end of search box event listener
 });
 
+searchBox.addEventListener("input", () => {
+  const searchBoxValue = searchBox.value.trim().toLowerCase();
+  if (searchBoxValue == "") {
+    if (dropDownValue == "") {
+      rootAside.innerHTML = "";
+      sectionOfEpisodes.innerHTML = "";
+      showAllCards(list);
+    } else if (dropDownValue != "") {
+      if (dropDownValue == firstOption()) {
+        rootAside.innerHTML = "";
+        // console.log(dropDownValue, "test fro dropValue");
+        // console.log(firstOption(), "======firstOption");
+        const item = findEpisodeByTitle(list, dropDownValue);
+        showCard(item);
+        showAllCardsUpdated(newList);
+      } else {
+        rootAside.innerHTML = "";
+        sectionOfEpisodes.innerHTML = "";
+        console.log(dropDownValue, "<--------------dropdonw value for problem");
+
+        const showCover = findEpisodeByTitle(list, firstOption());
+        const episode = findEpisodeByTitle(newList, dropDownValue);
+        showCard(showCover);
+        episodeCard(episode);
+      }
+    }
+  }
+
+  // console.log(dropDownValue, "<---------------dropDown value inside searchBox");
+});
+//showDropDown.selectedIndex = 0;
+/////////////this function select first value of the select dropdown/////
+function firstOption() {
+  showDropDown.selectedIndex = 0;
+  let firstValue = showDropDown.options[showDropDown.selectedIndex].value;
+  return firstValue;
+}
+//
+//
+//
+//
 //////////////Level 400 ----//////////////
 
 // Define the getLink function
+
 function getLink(dropDownValue) {
   let id = "";
   list.find((object) => {
@@ -414,23 +430,55 @@ function episodeCard(item) {
   // using the padstart function to nominating episodes like -S01E01
   const episode = padStartEpisodes(item.season, item.number);
   const filmTitle = card.querySelector("#film-title");
-  filmTitle.textContent = `${item.name}${episode}`;
-  // ======================
-  filmTitle.addEventListener("click", () => {
-    console.log(filmTitle.textContent);
-  });
-  // ==========================
+  //filmTitle.textContent = `${item.name}${episode}`;
+
+  // getting the link of the episode for the original page
+  const linkToEpisode = document.createElement("a");
+  linkToEpisode.className = "link-to-original";
+  linkToEpisode.setAttribute("href", item.url);
+  //linkToEpisode.setAttribute("target", "_blank");
+  linkToEpisode.textContent = `${item.name}${episode}`;
+
+  filmTitle.appendChild(linkToEpisode);
+
+  //===========================================
 
   const filmImage = card.querySelector("#film-img");
-  filmImage.src = item.image.medium;
-  const alt = `image of ${episode} of ${item.name}`;
-  filmImage.setAttribute("alt", alt);
+  if (item.image.medium) {
+    filmImage.src = item.image.medium;
+    const alt = `image of ${episode} of ${item.name}`;
+    filmImage.setAttribute("alt", alt);
+  } else {
+    filmImage.src = item.image;
+    const alt = `image of ${episode} of ${item.name}`;
+    filmImage.setAttribute("alt", alt);
+  }
 
   const duration = card.querySelector("#duration");
   duration.textContent = `Duration: ${item.runtime}`;
 
   const filmSummary = card.querySelector("#film-summary");
   filmSummary.innerHTML = `<summary class='film-summary-tag'>Movie summary:</summary> ${item.summary}`;
+
+  // ===================================================
+  const rate = card.getElementById("film-rate");
+  rate.textContent = `Rate: ${item.rating.average}`;
+
+  const status = card.getElementById("film-status");
+  if (item.status != undefined) {
+    status.textContent = `Status: ${item.status}`;
+  } else {
+    status.style.display = "none";
+  }
+
+  const filmGenre = card.getElementById("film-genre");
+  if (item.genres != undefined) {
+    content = item.genres.join(" | ");
+  } else {
+    filmGenre.style.display = "none";
+  }
+  // =====================================================
+
   card.class = "episode-card";
   sectionOfEpisodes.style.display = "block";
   sectionOfEpisodes.appendChild(card);
@@ -453,42 +501,42 @@ function showAllCardsUpdated(list) {
 //   return indexOfObject;
 // }
 
-function showCard2(item) {
-  //cloning the template for the cards
-  const temp = document.getElementById("film-card");
-  const card = temp.content.cloneNode(true);
+// function showCard2(item) {
+//   //cloning the template for the cards
+//   const temp = document.getElementById("film-card");
+//   const card = temp.content.cloneNode(true);
 
-  // using the padstart function to nominating episodes as we are asked to do
-  const episode = padStartEpisodes(item.season, item.number);
-  const filmTitle = card.getElementById("film-title");
-  filmTitle.textContent = `${item.name}${episode}`;
-  filmTitle.addEventListener("click", () => {
-    console.log("hii");
-  });
+//   // using the padstart function to nominating episodes as we are asked to do
+//   const episode = padStartEpisodes(item.season, item.number);
+//   const filmTitle = card.getElementById("film-title");
+//   filmTitle.textContent = `${item.name}${episode}`;
+//   filmTitle.addEventListener("click", () => {
+//     console.log("hii");
+//   });
 
-  const filmImage = card.getElementById("film-img");
-  filmImage.src = item.image.medium;
-  const alt = `image of ${episode} of ${item.name}`;
-  filmImage.setAttribute("alt", alt);
+//   const filmImage = card.getElementById("film-img");
+//   filmImage.src = item.image.medium;
+//   const alt = `image of ${episode} of ${item.name}`;
+//   filmImage.setAttribute("alt", alt);
 
-  const duration = card.getElementById("duration");
-  duration.textContent = `Duration: ${item.runtime}`;
+//   const duration = card.getElementById("duration");
+//   duration.textContent = `Duration: ${item.runtime}`;
 
-  const rate = document.getElementById("film-rate");
-  rate.textContent = `Rate: ${item.rate}`;
+//   const rate = document.getElementById("film-rate");
+//   rate.textContent = `Rate: ${item.rate}`;
 
-  const genere = card.getElementById("film-genere");
-  const content = "";
-  const GenContent = item.genere.forEach((gen) => {
-    content + gen + "|";
-  });
-  genere.textContent = `Genere: ${GenContent}`;
+//   const genere = card.getElementById("film-genere");
+//   const content = "";
+//   const GenContent = item.genere.forEach((gen) => {
+//     content + gen + "|";
+//   });
+//   genere.textContent = `Genere: ${GenContent}`;
 
-  const filmSummary = card.getElementById("film-summary");
-  filmSummary.innerHTML = `<summary class='film-summary-tag'>Movie summary:</summary> +${item.summary}`;
+//   const filmSummary = card.getElementById("film-summary");
+//   filmSummary.innerHTML = `<summary class='film-summary-tag'>Movie summary:</summary> +${item.summary}`;
 
-  rootAside.appendChild(card);
-}
+//   rootAside.appendChild(card);
+// }
 
 // ==========LEVEL 500 ==========
 
@@ -501,16 +549,47 @@ displayShowButton.addEventListener("click", () => {
   createDropDownList(list, showDropDown);
 });
 
-const sections = document.querySelectorAll(".card");
-for (const section of sections) {
-  const titleElement = section.querySelector("h2#film-title");
-  if (titleElement) {
-    // Add your event listener here, e.g.:
-    titleElement.addEventListener("click", () => {
-      console.log("Clicked on title:", titleElement.textContent);
-    });
-  }
+function searchFunction(array, content) {
+  const searchResult = [];
+  array.filter((item) => {
+    if (
+      item.name.includes(content) ||
+      item.summary.includes(content) ||
+      (item.genres && item.genres.includes(content))
+    ) {
+      searchResult.push(item);
+    }
+  });
+  return searchResult;
 }
+
+function searchNotFound() {
+  const h2 = document.createElement("h2");
+  h2.innerHTML = `Unfortuantely no term matched the search.
+  <i class="fa-light fa-face-frown"></i>`;
+}
+//////Test function for clicking on title initial Demo///////
+
+// function clickOnTitle(list) {
+//   const sections = document.querySelectorAll(".card");
+//   for (const section of sections) {
+//     const titleElement = section.querySelector("h2#film-title");
+//     const titleElementContent = titleElement.textContent.trim();
+//     if (titleElement) {
+//       const item = list.find((object) =>
+//         object.name.includes(titleElementContent)
+//       );
+//       // Add your event listener here, e.g.:
+//       titleElement.addEventListener("click", () => {
+//         console.log("Clicked on title:", titleElement.textContent);
+//         console.log("item", item);
+//         rootAside.innerHTML = "";
+//         episodeCard(item);
+//         showAllCards(newList);
+//       });
+//     }
+//   }
+// }
 
 // const showDropDown2 = document.querySelector("#episode-drop-down");
 // showDropDown2.addEventListener("change", () => {
@@ -550,4 +629,200 @@ for (const section of sections) {
 //       newList = [];
 //     }
 //   }
+// });
+
+//
+//
+//
+//
+//
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////BackUp of searchBox\\\\\\\\\\
+// searchBox.addEventListener("input", () => {
+//   const searchBoxvalue = searchBox.value.trim().toLowerCase();
+//   clearPage = true;
+//   resultCounter = 0;
+
+//   if (searchBoxvalue === "") {
+//     //if search box is empty and drop down is empty display all the shows
+//     // console.log(episodeDropDown.value, "valueeee");
+//     if (dropDownValue == "" && secondDropValue == "") {
+//       rootAside.innerHTML = "";
+//       showAllCards(list);
+//       searchCounter.innerHTML = "";
+//       searchCounter.style.display = "none";
+//     } else if (dropDownValue != "" && episodeDropDown.value == "") {
+//       rootAside.innerHTML = "";
+
+//       // let indexOfItemForCard = findIndexByName(dropDownValue, list);
+//       const ittem = findEpisodeByTitle(list, dropDownValue);
+//       showCard(ittem);
+//       showAllCardsUpdated(newList);
+//       searchCounter.style.display = "none";
+//     } else if (dropDownValue != "" && episodeDropDown.value != "") {
+//       rootAside.innerHTML = "";
+
+//       sectionOfEpisodes.innerHTML = "";
+
+//       const itemList = findEpisodeByTitle(list, dropDownValue);
+//       const itemNewList = findEpisodeByTitle(newList, secondDropValue);
+//       showCard(itemList);
+//       episodeCard(itemNewList);
+//     }
+//   } else {
+//     if (dropDownValue == "") {
+//       list.forEach((element) => {
+//         // set name and summary to lower case for using include method
+//         const elementNamelowerCase = element.name.toLowerCase();
+//         const elementSummaryLowerCase = element.summary.toLowerCase();
+
+//         // check for including
+//         const includeName = elementNamelowerCase.includes(searchBoxvalue);
+//         const includeSummary = elementSummaryLowerCase.includes(searchBoxvalue);
+
+//         if (includeName || includeSummary) {
+//           resultCounter++;
+//           if (clearPage) {
+//             rootAside.innerHTML = "";
+//             clearPage = false;
+//           }
+//           // rootAside.innerHTML = "";
+//           showCard(element);
+//         }
+//       });
+//     }
+//     if (dropDownValue != "") {
+//       newList.forEach((element) => {
+//         // set name and summary to lower case for using include method
+//         const elementNamelowerCase = element.name.toLowerCase();
+//         const elementSummaryLowerCase = element.summary.toLowerCase();
+
+//         // check for including
+//         const includeName = elementNamelowerCase.includes(searchBoxvalue);
+//         const includeSummary = elementSummaryLowerCase.includes(searchBoxvalue);
+
+//         if (includeName || includeSummary) {
+//           resultCounter++;
+//           if (clearPage) {
+//             rootAside.innerHTML = "";
+//             clearPage = false;
+//           }
+//           // rootAside.innerHTML = "";
+//           showCard(element);
+//         }
+//       });
+//     }
+
+//     // Display the search counter
+//     searchCounter.innerHTML = `${resultCounter} item${
+//       resultCounter !== 1 ? "s" : ""
+//     } matched the search`;
+//     searchCounter.style.display = "inline-block";
+//   }
+
+//   rootAside.prepend(searchCounter);
+//   //end of search box event listener
+// });
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////\\\\\\\\\\\\\\\\\=======SECOND BACK UP==========/////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//this bakc up is for the searchButton on click
+//
+// searchBox.addEventListener("input", () => {
+//   const searchBoxValue = searchBox.value.trim().toLowerCase();
+//   clearPage = true;
+//   resultCounter = 0;
+
+//   if (searchBoxValue === "") {
+//     //if search box is empty and drop down is empty display all the shows
+//     // console.log(episodeDropDown.value, "valueeee");
+//     if (dropDownValue == "") {
+//       //console.log(dropDownValue, "<-----");
+//       rootAside.innerHTML = "";
+//       showAllCards(list);
+//       searchCounter.innerHTML = "";
+//       searchCounter.style.display = "none";
+//     } else if (dropDownValue != "") {
+//       console.log(dropDownValue, "dropdown value inside search box");
+//       rootAside.innerHTML = "";
+//       //check if all episode are shown in the page
+//       //when search box cleared all episodes are shown in the page again
+//       //let isTitle = list.find((item) => item.name.includes(dropDownValue));
+//       const object = findEpisodeByTitle(list, dropDownValue);
+//       //console.log(object, "<----this is Object founded by func");
+//       if (object) {
+//         showCard(object);
+//         showAllCardsUpdated(newList);
+//       } else {
+//         rootAside.innerHTML = "";
+//         const episodeToShow = findEpisodeByTitle(newList, dropDownValue);
+//         episodeCard(episodeToShow);
+//       }
+//       searchCounter.style.display = "none";
+//     }
+//   } else if (searchBoxValue !== "") {
+//     if (dropDownValue == "") {
+//       list.forEach((element) => {
+//         // set name and summary to lower case for using include method
+//         const elementNamelowerCase = element.name.toLowerCase();
+//         const elementSummaryLowerCase = element.summary.toLowerCase();
+
+//         // check for including
+//         const includeName = elementNamelowerCase.includes(searchBoxValue);
+//         const includeSummary = elementSummaryLowerCase.includes(searchBoxValue);
+
+//         if (includeName || includeSummary) {
+//           console.log(element.name, "element.name-----------");
+//           console.log(element.summary, "-----element.summary");
+//           resultCounter++;
+//           if (clearPage) {
+//             rootAside.innerHTML = "";
+//             clearPage = false;
+//           }
+//           //rootAside.innerHTML = "";
+//           showCard(element);
+//           //episodeCard(element);
+//         }
+//       });
+//     } else if (dropDownValue != "") {
+//       // const object = findEpisodeByTitle(list, dropDownValue);
+//       // console.log(object, "<--------object to observe in search box");
+
+//       newList.forEach((element) => {
+//         // set name and summary to lower case for using include method
+//         const elementNamelowerCase = element.name.toLowerCase();
+//         const elementSummaryLowerCase = element.summary.toLowerCase();
+
+//         // check for including
+//         const includeName = elementNamelowerCase.includes(searchBoxValue);
+//         const includeSummary = elementSummaryLowerCase.includes(searchBoxValue);
+
+//         if (includeName || includeSummary) {
+//           console.log(element.name, "element.name-----------");
+//           console.log(element.summary, "-----element.summary");
+//           resultCounter++;
+//           episodeCard(element);
+//           if (clearPage) {
+//             rootAside.innerHTML = "";
+//             clearPage = false;
+//           }
+//           // rootAside.innerHTML = "";
+//           //showCard(element);
+//         }
+//       });
+//     }
+
+//     // Display the search counter
+//     searchCounter.innerHTML = `${resultCounter} item${
+//       resultCounter !== 1 ? "s" : ""
+//     } matched the search`;
+//     searchCounter.style.display = "inline-block";
+//   }
+
+//   rootAside.prepend(searchCounter);
+//   //end of search box event listener
 // });

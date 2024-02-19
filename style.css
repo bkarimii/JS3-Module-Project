@@ -117,7 +117,9 @@ aside:last-child{
 #search-box-container input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid white;
+  border:none;
+  outline: none;
+
   background-color: transparent;
   color: white;
 }
@@ -261,3 +263,21 @@ aside:last-child{
 #all-show-button:hover{
   background-color: rgb(20, 192, 4);
 }
+
+
+
+#search-box-and-fa-icon{
+  display: flex;
+  border: 1.5px solid white;
+
+}
+
+.link-to-original{
+  text-decoration: none;
+  color: #fff;
+}
+
+.link-to-original:hover{
+  color: orangered
+}
+
