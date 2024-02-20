@@ -10,6 +10,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
   </head>
 
   <body>
@@ -35,7 +39,12 @@
           <p>Page Is Loading...</p>
         </div>
       </div>
-      <button id="all-show-button">Display All Shows</button>
+      <button
+        id="all-show-button"
+        class="fa fa-home"
+        aria-hidden="true"
+      ></button>
+      <!-- <button id="all-show-button">Display All Shows</button> -->
       <!-- ////////////////////// -->
       <div id="search-box-container">
         <div id="search-box-and-fa-icon">
@@ -44,9 +53,6 @@
             id="search-box"
             placeholder="Search Through the episodes and summary"
           />
-          <span id="clear-search-box"
-            ><i class="fa fa-times-circle" style="font-size: 24px"></i
-          ></span>
         </div>
         <button class="fa fa-search search"></button>
         <!-- <span id="search-counting"> </span> -->
@@ -68,6 +74,19 @@
           </div>
         </section>
       </template>
+      <template id="serach-not-found">
+        <div id="no-match-for-search-div">
+          <h2
+            id="no-match-for-search"
+            style="
+              font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial,
+                sans-serif;
+            "
+          >
+            Unfortunately, no term matched the search...😞
+          </h2>
+        </div>
+      </template>
       <aside id="root">
         <section id="episode-container"></section>
       </aside>
@@ -80,27 +99,6 @@
             <option value="">Show All Series</option>
           </select>
         </section>
-        <!-- <section id="all-shows">
-          <label for="Shows">Choose your Episode:</label>
-          <select name="Shows" id="show-drop-down">
-            <option value="">Show All Episodes</option>
-        </section> -->
-        <!-- <section>
-          <div>
-            <img
-              src="https://www.manorandashburyresorts.co.uk/wp-content/uploads/2023/12/20-OFF-800x800.gif"
-              id="subscribe-img"
-              alt="sbscribe offer, 20% off"
-            />
-            <button id="subscribtion">Join Now</button>
-          </div>
-          <div>
-            <p>
-              Join us today and get 20% off your subscription. You'll also
-              receive the latest news from the box office and Hollywood.
-            </p>
-          </div>
-        </section> -->
       </aside>
     </main>
     <footer id="footer"></footer>

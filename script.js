@@ -20,6 +20,11 @@
 //
 ////////FUNCTION DEFINITIONS \\\\\\\\\\\\
 const rootAside = document.getElementById("root");
+const searchBoxContainer = document.getElementById("search-box-container");
+
+// =====================================
+let numberOfFetches = 0;
+// =====================================
 
 function showCard(item) {
   //cloning the template for the cards
@@ -219,6 +224,8 @@ showDropDown.addEventListener("change", () => {
   // }
   if (linkToFetch) {
     dynamicFetch(linkToFetch).then(() => {
+      numberOfFetches++;
+      console.log(numberOfFetches, "------------NUMBER OF FETCH");
       const initialOption = `<option value="${dropDownValue}">Show All Episodes</option>`;
       showDropDown.innerHTML = initialOption;
       createDropDownList(newList, showDropDown);
@@ -255,38 +262,11 @@ function findEpisodeByTitle(episodeList, title) {
   });
 }
 /////////////////////////////////////////////////////////////
-/////////add event listener for the second dropdown///////////
-//Second drop down
-// episodeDropDown.addEventListener("change", () => {
-//   secondDropValue = episodeDropDown.value;
-
-//   const foundEpisode = findEpisodeByTitle(newList, secondDropValue);
-//   rootAside.innerHTML = "";
-//   sectionOfEpisodes.innerHTML = "";
-//   searchBox.value = "";
-
-//   // find the item to be shown on the top for each episode , in other word based on the value in the first dropdown
-//   //we'll find the object index to show the cover of each series on the top of episodes
-//   // let indexOfItemForCard = findIndexByName(dropDownValue, list);
-//   showCard(findEpisodeByTitle(list, dropDownValue));
-//   if (foundEpisode) {
-//     // let itemForCard = findIndexByName(dropDownValue, list);
-//     // showCard(list[indexOfItemForCard]);
-//     //console.log(dropDownValue, "dropvalueXXX");
-//     episodeCard(foundEpisode);
-//   } else {
-//     // showCard(list[indexOfItemForCard]);
-//     showAllCardsUpdated(newList);
-//     //episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
-//   }
-// });
-
-/////////////////////////////////////////////////////////////////////
 //
 //
 //
 //
-// geting search box from the page
+///////////////geting search box from the page//////////////
 const searchBox = document.getElementById("search-box");
 const searchButton = document.querySelector(".search");
 
@@ -295,8 +275,6 @@ let clearPage = true;
 let resultCounter = 0;
 const searchCounter = document.createElement("span");
 searchCounter.id = "display-matched-result";
-searchBoxCleaner = document.getElementById("clear-search-box");
-searchBoxCleaner.addEventListener("click", () => {});
 
 // searchButton.addEventListener("click" )
 searchButton.addEventListener("click", () => {
@@ -308,12 +286,15 @@ searchButton.addEventListener("click", () => {
     const filteredShows = searchFunction(list, searchBoxValue);
     if (filteredShows) {
       rootAside.innerHTML = "";
+      // searchNotFound();
       showAllCards(filteredShows);
       // Display the search counter
       searchCounter.innerHTML = `${filteredShows.length} item${
         filteredShows.length !== 1 ? "s" : ""
       } matched the search`;
       searchCounter.style.display = "inline-block";
+    } else {
+      searchNotFound();
     }
   } else {
     // console.log(newList[0], "<---------------this is new list");
@@ -328,9 +309,12 @@ searchButton.addEventListener("click", () => {
         filteredEpisodes.length !== 1 ? "s" : ""
       } matched the search`;
       searchCounter.style.display = "inline-block";
+    } else {
+      searchNotFound();
     }
   }
 
+  //searchBoxContainer.prepend(searchCounter);
   rootAside.prepend(searchCounter);
   //end of search box event listener
 });
@@ -345,16 +329,13 @@ searchBox.addEventListener("input", () => {
     } else if (dropDownValue != "") {
       if (dropDownValue == firstOption()) {
         rootAside.innerHTML = "";
-        // console.log(dropDownValue, "test fro dropValue");
-        // console.log(firstOption(), "======firstOption");
+
         const item = findEpisodeByTitle(list, dropDownValue);
         showCard(item);
         showAllCardsUpdated(newList);
       } else {
         rootAside.innerHTML = "";
         sectionOfEpisodes.innerHTML = "";
-        console.log(dropDownValue, "<--------------dropdonw value for problem");
-
         const showCover = findEpisodeByTitle(list, firstOption());
         const episode = findEpisodeByTitle(newList, dropDownValue);
         showCard(showCover);
@@ -362,10 +343,8 @@ searchBox.addEventListener("input", () => {
       }
     }
   }
-
-  // console.log(dropDownValue, "<---------------dropDown value inside searchBox");
 });
-//showDropDown.selectedIndex = 0;
+
 /////////////this function select first value of the select dropdown/////
 function firstOption() {
   showDropDown.selectedIndex = 0;
@@ -413,7 +392,7 @@ async function dynamicFetch(url) {
   }
 }
 
-// reach to the section whicj is going to hold episode series
+// reach to the section which is going to hold episode series
 const sectionOfEpisodes = document.getElementById("episode-container");
 sectionOfEpisodes.style.display = "none";
 
@@ -430,13 +409,11 @@ function episodeCard(item) {
   // using the padstart function to nominating episodes like -S01E01
   const episode = padStartEpisodes(item.season, item.number);
   const filmTitle = card.querySelector("#film-title");
-  //filmTitle.textContent = `${item.name}${episode}`;
 
   // getting the link of the episode for the original page
   const linkToEpisode = document.createElement("a");
   linkToEpisode.className = "link-to-original";
   linkToEpisode.setAttribute("href", item.url);
-  //linkToEpisode.setAttribute("target", "_blank");
   linkToEpisode.textContent = `${item.name}${episode}`;
 
   filmTitle.appendChild(linkToEpisode);
@@ -493,49 +470,11 @@ function showAllCardsUpdated(list) {
 }
 
 /// this function finds index of the objects in the fetched array base on the name property in the object
-
 // function findIndexByName(n, array) {
 //   const indexOfObject = array.findIndex((item) => {
 //     return item.name == n;
 //   });
 //   return indexOfObject;
-// }
-
-// function showCard2(item) {
-//   //cloning the template for the cards
-//   const temp = document.getElementById("film-card");
-//   const card = temp.content.cloneNode(true);
-
-//   // using the padstart function to nominating episodes as we are asked to do
-//   const episode = padStartEpisodes(item.season, item.number);
-//   const filmTitle = card.getElementById("film-title");
-//   filmTitle.textContent = `${item.name}${episode}`;
-//   filmTitle.addEventListener("click", () => {
-//     console.log("hii");
-//   });
-
-//   const filmImage = card.getElementById("film-img");
-//   filmImage.src = item.image.medium;
-//   const alt = `image of ${episode} of ${item.name}`;
-//   filmImage.setAttribute("alt", alt);
-
-//   const duration = card.getElementById("duration");
-//   duration.textContent = `Duration: ${item.runtime}`;
-
-//   const rate = document.getElementById("film-rate");
-//   rate.textContent = `Rate: ${item.rate}`;
-
-//   const genere = card.getElementById("film-genere");
-//   const content = "";
-//   const GenContent = item.genere.forEach((gen) => {
-//     content + gen + "|";
-//   });
-//   genere.textContent = `Genere: ${GenContent}`;
-
-//   const filmSummary = card.getElementById("film-summary");
-//   filmSummary.innerHTML = `<summary class='film-summary-tag'>Movie summary:</summary> +${item.summary}`;
-
-//   rootAside.appendChild(card);
 // }
 
 // ==========LEVEL 500 ==========
@@ -547,14 +486,15 @@ displayShowButton.addEventListener("click", () => {
   const initialOption = '<option value="">Show All Shows</option>';
   showDropDown.innerHTML = initialOption;
   createDropDownList(list, showDropDown);
+  displayShowButton.style.display = "none";
 });
 
 function searchFunction(array, content) {
   const searchResult = [];
   array.filter((item) => {
     if (
-      item.name.includes(content) ||
-      item.summary.includes(content) ||
+      item.name.toLowerCase().includes(content) ||
+      item.summary.toLowerCase().includes(content) ||
       (item.genres && item.genres.includes(content))
     ) {
       searchResult.push(item);
@@ -564,10 +504,16 @@ function searchFunction(array, content) {
 }
 
 function searchNotFound() {
-  const h2 = document.createElement("h2");
-  h2.innerHTML = `Unfortuantely no term matched the search.
-  <i class="fa-light fa-face-frown"></i>`;
+  const temp = document.getElementById("serach-not-found");
+  card = temp.content.cloneNode(true);
+
+  //const bigDiv = temp.querySelector("#no-match-for-search-div");
+  const h2InsideDiv = card.querySelector("#no-match-for-search");
+  h2InsideDiv.textContent = "Unfortunately, no term matched the search.";
+
+  rootAside.appendChild(card);
 }
+
 //////Test function for clicking on title initial Demo///////
 
 // function clickOnTitle(list) {
@@ -590,142 +536,6 @@ function searchNotFound() {
 //     }
 //   }
 // }
-
-// const showDropDown2 = document.querySelector("#episode-drop-down");
-// showDropDown2.addEventListener("change", () => {
-//   dropDownValue = showDropDown.value;
-//   linkToFetch = getLink(dropDownValue);
-//   const foundItem = findEpisodeByTitle(list, dropDownValue);
-//   rootAside.innerHTML = "";
-//   sectionOfEpisodes.innerHTML = "";
-//   // clear the search box by any change in the drop down menue
-//   searchBox.value = "";
-//   if (foundItem) {
-//     showCard(foundItem);
-//   } else {
-//     showAllCards(list);
-//     //episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
-//   }
-//   if (linkToFetch) {
-//     dynamicFetch(linkToFetch).then(() => {
-//       //second dropBox for episodes
-//       // console.log(linkToFetch);
-//       secondDropValue = episodeDropDown.value;
-//       // console.log("-secondDropDown-------->", secondDropValue);
-
-//       const initialOption = '<option value="">Show All Episodes</option>';
-//       //console.log(newList, "new list inside the event");
-//       episodeDropDown.innerHTML = initialOption;
-//       createDropDownList(newList, episodeDropDown);
-//       // const episodesSection = document.createElement("section");
-//       // episodesSection.id = "episode-of-each-series";
-
-//       showAllCardsUpdated(newList);
-//       // showAllCards(newList);
-//     });
-//   } else {
-//     if (dropDownValue == "") {
-//       episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
-//       newList = [];
-//     }
-//   }
-// });
-
-//
-//
-//
-//
-//
-//
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////BackUp of searchBox\\\\\\\\\\
-// searchBox.addEventListener("input", () => {
-//   const searchBoxvalue = searchBox.value.trim().toLowerCase();
-//   clearPage = true;
-//   resultCounter = 0;
-
-//   if (searchBoxvalue === "") {
-//     //if search box is empty and drop down is empty display all the shows
-//     // console.log(episodeDropDown.value, "valueeee");
-//     if (dropDownValue == "" && secondDropValue == "") {
-//       rootAside.innerHTML = "";
-//       showAllCards(list);
-//       searchCounter.innerHTML = "";
-//       searchCounter.style.display = "none";
-//     } else if (dropDownValue != "" && episodeDropDown.value == "") {
-//       rootAside.innerHTML = "";
-
-//       // let indexOfItemForCard = findIndexByName(dropDownValue, list);
-//       const ittem = findEpisodeByTitle(list, dropDownValue);
-//       showCard(ittem);
-//       showAllCardsUpdated(newList);
-//       searchCounter.style.display = "none";
-//     } else if (dropDownValue != "" && episodeDropDown.value != "") {
-//       rootAside.innerHTML = "";
-
-//       sectionOfEpisodes.innerHTML = "";
-
-//       const itemList = findEpisodeByTitle(list, dropDownValue);
-//       const itemNewList = findEpisodeByTitle(newList, secondDropValue);
-//       showCard(itemList);
-//       episodeCard(itemNewList);
-//     }
-//   } else {
-//     if (dropDownValue == "") {
-//       list.forEach((element) => {
-//         // set name and summary to lower case for using include method
-//         const elementNamelowerCase = element.name.toLowerCase();
-//         const elementSummaryLowerCase = element.summary.toLowerCase();
-
-//         // check for including
-//         const includeName = elementNamelowerCase.includes(searchBoxvalue);
-//         const includeSummary = elementSummaryLowerCase.includes(searchBoxvalue);
-
-//         if (includeName || includeSummary) {
-//           resultCounter++;
-//           if (clearPage) {
-//             rootAside.innerHTML = "";
-//             clearPage = false;
-//           }
-//           // rootAside.innerHTML = "";
-//           showCard(element);
-//         }
-//       });
-//     }
-//     if (dropDownValue != "") {
-//       newList.forEach((element) => {
-//         // set name and summary to lower case for using include method
-//         const elementNamelowerCase = element.name.toLowerCase();
-//         const elementSummaryLowerCase = element.summary.toLowerCase();
-
-//         // check for including
-//         const includeName = elementNamelowerCase.includes(searchBoxvalue);
-//         const includeSummary = elementSummaryLowerCase.includes(searchBoxvalue);
-
-//         if (includeName || includeSummary) {
-//           resultCounter++;
-//           if (clearPage) {
-//             rootAside.innerHTML = "";
-//             clearPage = false;
-//           }
-//           // rootAside.innerHTML = "";
-//           showCard(element);
-//         }
-//       });
-//     }
-
-//     // Display the search counter
-//     searchCounter.innerHTML = `${resultCounter} item${
-//       resultCounter !== 1 ? "s" : ""
-//     } matched the search`;
-//     searchCounter.style.display = "inline-block";
-//   }
-
-//   rootAside.prepend(searchCounter);
-//   //end of search box event listener
-// });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////\\\\\\\\\\\\\\\\\=======SECOND BACK UP==========/////////////////////////
