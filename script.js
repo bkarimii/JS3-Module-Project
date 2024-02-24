@@ -316,9 +316,11 @@ searchButton.addEventListener("click", () => {
   //end of search box event listener
 });
 
+searchButton.disabled = true;
 searchBox.addEventListener("input", () => {
   const searchBoxValue = searchBox.value.trim().toLowerCase();
   if (searchBoxValue == "") {
+    searchButton.disabled = true;
     if (dropDownValue == "") {
       rootAside.innerHTML = "";
       sectionOfEpisodes.innerHTML = "";
@@ -345,6 +347,8 @@ searchBox.addEventListener("input", () => {
         episodeCard(foundEpisodeObject);
       }
     }
+  } else {
+    searchButton.disabled = false;
   }
 });
 
