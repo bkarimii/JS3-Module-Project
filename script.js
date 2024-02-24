@@ -1,29 +1,10 @@
-//You can edit ALL of the code here
-
-// function setup() {
-//   const allEpisodes = getAllEpisodes();
-//   makePageForEpisodes(allEpisodes);
-// }
-
-// function makePageForEpisodes(episodeList) {
-//   const rootElem = document.getElementById("root");
-//   rootElem.textContent = `Got ${episodeList.length} episode(s)`;
-// }
-
-//window.onload = setup;
-
-//const card = document.getElementById("film-card").content.cloneNode(true);
-//
-//
-//
-//
-//
 ////////FUNCTION DEFINITIONS \\\\\\\\\\\\
 const rootAside = document.getElementById("root");
 const searchBoxContainer = document.getElementById("search-box-container");
 
 // =====================================
 let numberOfFetches = 0;
+const episodeObject = {};
 // =====================================
 
 function showCard(item) {
@@ -37,7 +18,7 @@ function showCard(item) {
   filmTitle.textContent = `${item.name}${episode}`;
 
   // // =================================
-
+  filmTitle.addEventListener("click", () => clickOnTitle(item));
   // // ==========================
 
   const filmImage = card.getElementById("film-img");
@@ -150,16 +131,17 @@ function sortingArray(a, b) {
 /////////////////////
 
 function padStartEpisodes(season, episode) {
-  if (season < 10 && !undefined) {
-    season = season.toString().padStart(2, "0");
-  }
-  if (episode < 10 && !undefined) {
-    episode = episode.toString().padStart(2, "0");
-  }
-  // it returns nothing if season and episodes not available as in the shows we don't how season and episodes
   if (episode == undefined || season == undefined) {
     return "";
   }
+  if (season < 10) {
+    season = season.toString().padStart(2, "0");
+  }
+  if (episode < 10) {
+    episode = episode.toString().padStart(2, "0");
+  }
+  // it returns nothing if season and episodes not available as in the shows we don't how season and episodes
+
   let seasonEpisode = `-S${season}E${episode}`;
   return seasonEpisode;
 }
@@ -202,12 +184,14 @@ let dropDownValue = "";
 let linkToFetch;
 let secondDropValue = "";
 let showValue = "";
-//second drop box episodes
-//const episodeDropDown = document.querySelector("#show-drop-down");
+
 //first drop box for all shows
 const showDropDown = document.querySelector("#episode-drop-down");
 console.log(showDropDown.value, "this is drop value out of eventlistener");
+
+//Dropdown select list of shows and episodes
 showDropDown.addEventListener("change", () => {
+  console.log(episodeObject, "<----object");
   displayShowButton.style.display = "inline-block";
   dropDownValue = showDropDown.value;
   linkToFetch = getLink(dropDownValue);
@@ -218,39 +202,53 @@ showDropDown.addEventListener("change", () => {
   searchBox.value = "";
   if (foundItem) {
     showCard(foundItem);
-  }
-  // else {
-  //   showAllCards(list);
-  // }
-  if (linkToFetch) {
-    dynamicFetch(linkToFetch).then(() => {
-      numberOfFetches++;
-      console.log(numberOfFetches, "------------NUMBER OF FETCH");
-      const initialOption = `<option value="${dropDownValue}">Show All Episodes</option>`;
-      showDropDown.innerHTML = initialOption;
-      createDropDownList(newList, showDropDown);
-      showAllCardsUpdated(newList);
-      const foundEpisode = findEpisodeByTitle(newList, dropDownValue);
-      // console.log(dropDownValue, "dropValueInside Fetch");
-      // console.log(foundEpisode, "----foundEpisode");
-      showValue = dropDownValue;
-      // console.log(showValue, "showvalue inside fetch");
-    });
-  } else {
-    if (dropDownValue == "") {
-      //episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
-      newList = [];
-    } else {
-      const ShowCover = findEpisodeByTitle(list, showValue);
-      showCard(ShowCover);
-      const episodeItem = findEpisodeByTitle(newList, dropDownValue);
-      //console.log(episodeItem);
-      episodeCard(episodeItem);
-      //console.log(showValue, "showvalue inside else part of fetch");
-    }
-  }
-});
 
+    if (foundItem.id in episodeObject) {
+      showAllCardsUpdated(episodeObject[foundItem.id]);
+      showDropDown.innerHTML = "";
+
+      const option = document.createElement("option");
+      option.value = `${foundItem.name}`;
+      option.textContent = "Show All Episodes";
+      showDropDown.appendChild(option);
+
+      // const initialOption = `<option value="${item.name}">Show All Episodes</option>`;
+      // showDropDown.innerHTML = initialOption;
+      createDropDownList(episodeObject[foundItem.id], showDropDown);
+    } else {
+      dynamicFetch(linkToFetch)
+        .then(() => {
+          episodeObject[foundItem.id] = data;
+        })
+        .then(() => {
+          showAllCardsUpdated(episodeObject[foundItem.id]);
+          showDropDown.innerHTML = "";
+          const option = document.createElement("option");
+          option.value = `${foundItem.name}`;
+          option.textContent = "Show All Episodes";
+          showDropDown.appendChild(option);
+          // const initialOption = `<option value = ${foundItem.name}>Show All Episodes</option>`;
+          // showDropDown.innerHTML = initialOption;
+          createDropDownList(episodeObject[foundItem.id], showDropDown);
+
+          console.log(episodeObject, "<----episodeObject in Fetch in dropdown");
+        });
+    }
+  } else {
+    const foundShowObject = findEpisodeByTitle(list, firstOption());
+    const foundEpisodeObject = findEpisodeByTitle(
+      episodeObject[foundShowObject.id],
+      dropDownValue
+    );
+    console.log(foundEpisodeObject, "this is episode object");
+    console.log(foundShowObject, "this is showObject");
+    showCard(foundShowObject);
+    episodeCard(foundEpisodeObject);
+  }
+
+  //End of DropDown
+});
+console.log(dropDownValue, "this is drop down value");
 /////////////////////////////this function find episode or show by title or drop down value//////////////////////////////////////////////
 function findEpisodeByTitle(episodeList, title) {
   return episodeList.find((episode) => {
@@ -297,7 +295,6 @@ searchButton.addEventListener("click", () => {
       searchNotFound();
     }
   } else {
-    // console.log(newList[0], "<---------------this is new list");
     const filteredEpisodes = searchFunction(newList, searchBoxValue);
     if (filteredEpisodes) {
       rootAside.innerHTML = "";
@@ -331,15 +328,21 @@ searchBox.addEventListener("input", () => {
         rootAside.innerHTML = "";
 
         const item = findEpisodeByTitle(list, dropDownValue);
+
         showCard(item);
-        showAllCardsUpdated(newList);
+
+        showAllCardsUpdated(episodeObject[item.id]);
       } else {
         rootAside.innerHTML = "";
         sectionOfEpisodes.innerHTML = "";
-        const showCover = findEpisodeByTitle(list, firstOption());
-        const episode = findEpisodeByTitle(newList, dropDownValue);
-        showCard(showCover);
-        episodeCard(episode);
+
+        const foundShowObject = findEpisodeByTitle(list, firstOption());
+        const foundEpisodeObject = findEpisodeByTitle(
+          episodeObject[foundShowObject.id],
+          dropDownValue
+        );
+        showCard(foundShowObject);
+        episodeCard(foundEpisodeObject);
       }
     }
   }
@@ -347,8 +350,8 @@ searchBox.addEventListener("input", () => {
 
 /////////////this function select first value of the select dropdown/////
 function firstOption() {
-  showDropDown.selectedIndex = 0;
-  let firstValue = showDropDown.options[showDropDown.selectedIndex].value;
+  // showDropDown.selectedIndex = 0;
+  let firstValue = showDropDown.options[0].value;
   return firstValue;
 }
 //
@@ -386,6 +389,7 @@ async function dynamicFetch(url) {
     }
     data = await response.json();
     newList = data;
+
     return data;
   } catch (error) {
     console.error("Error happened in dynamic Fetch", error.message);
@@ -486,6 +490,7 @@ displayShowButton.addEventListener("click", () => {
   const initialOption = '<option value="">Show All Shows</option>';
   showDropDown.innerHTML = initialOption;
   createDropDownList(list, showDropDown);
+  searchBox.value = "";
   displayShowButton.style.display = "none";
 });
 
@@ -509,9 +514,59 @@ function searchNotFound() {
 
   //const bigDiv = temp.querySelector("#no-match-for-search-div");
   const h2InsideDiv = card.querySelector("#no-match-for-search");
-  h2InsideDiv.textContent = "Unfortunately, no term matched the search.";
+  h2InsideDiv.textContent = "No item matched the search.";
 
   rootAside.appendChild(card);
+}
+
+function idFinder(title) {
+  let id = "";
+  list.find((object) => {
+    if (object.name === title) {
+      id = object.id;
+      return id;
+      // Exit the loop when the object is found
+    }
+  });
+}
+
+function clickOnTitle(item) {
+  // const episode = padStartEpisodes(item.season, item.number);
+  const name = `${item.name}`;
+  console.log(name, "this is name---------");
+  dropDownValue = name;
+  if (item.id in episodeObject) {
+    rootAside.innerHTML = "";
+    sectionOfEpisodes.innerHTML = "";
+    showDropDown.innerHTML = "";
+    const initialOption = `<option value = ${name}>Show All Episodes</option>`;
+    showDropDown.innerHTML = initialOption;
+    createDropDownList(episodeObject[item.id], showDropDown);
+    displayShowButton.style.display = "inline-block";
+    showCard(item);
+    showAllCardsUpdated(episodeObject[item.id]);
+  } else {
+    const tvShowUrl = `https://api.tvmaze.com/shows/${item.id}/episodes`;
+    dynamicFetch(tvShowUrl)
+      .then(() => {
+        episodeObject[item.id] = data;
+        MYLIST = [];
+        console.log(episodeObject);
+      })
+      .then(() => {
+        rootAside.innerHTML = "";
+        sectionOfEpisodes.innerHTML = "";
+        showCard(item);
+        showAllCardsUpdated(episodeObject[item.id]);
+        showDropDown.innerHTML = "";
+        const initialOption = `<option value = ${name}>Show All Episodes</option>`;
+        showDropDown.innerHTML = initialOption;
+        createDropDownList(episodeObject[item.id], showDropDown);
+        displayShowButton.style.display = "inline-block";
+      });
+
+    console.log("just for test -----------");
+  }
 }
 
 //////Test function for clicking on title initial Demo///////
@@ -537,102 +592,47 @@ function searchNotFound() {
 //   }
 // }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////\\\\\\\\\\\\\\\\\=======SECOND BACK UP==========/////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//this bakc up is for the searchButton on click
-//
-// searchBox.addEventListener("input", () => {
-//   const searchBoxValue = searchBox.value.trim().toLowerCase();
-//   clearPage = true;
-//   resultCounter = 0;
-
-//   if (searchBoxValue === "") {
-//     //if search box is empty and drop down is empty display all the shows
-//     // console.log(episodeDropDown.value, "valueeee");
-//     if (dropDownValue == "") {
-//       //console.log(dropDownValue, "<-----");
-//       rootAside.innerHTML = "";
-//       showAllCards(list);
-//       searchCounter.innerHTML = "";
-//       searchCounter.style.display = "none";
-//     } else if (dropDownValue != "") {
-//       console.log(dropDownValue, "dropdown value inside search box");
-//       rootAside.innerHTML = "";
-//       //check if all episode are shown in the page
-//       //when search box cleared all episodes are shown in the page again
-//       //let isTitle = list.find((item) => item.name.includes(dropDownValue));
-//       const object = findEpisodeByTitle(list, dropDownValue);
-//       //console.log(object, "<----this is Object founded by func");
-//       if (object) {
-//         showCard(object);
-//         showAllCardsUpdated(newList);
-//       } else {
-//         rootAside.innerHTML = "";
-//         const episodeToShow = findEpisodeByTitle(newList, dropDownValue);
-//         episodeCard(episodeToShow);
-//       }
-//       searchCounter.style.display = "none";
-//     }
-//   } else if (searchBoxValue !== "") {
-//     if (dropDownValue == "") {
-//       list.forEach((element) => {
-//         // set name and summary to lower case for using include method
-//         const elementNamelowerCase = element.name.toLowerCase();
-//         const elementSummaryLowerCase = element.summary.toLowerCase();
-
-//         // check for including
-//         const includeName = elementNamelowerCase.includes(searchBoxValue);
-//         const includeSummary = elementSummaryLowerCase.includes(searchBoxValue);
-
-//         if (includeName || includeSummary) {
-//           console.log(element.name, "element.name-----------");
-//           console.log(element.summary, "-----element.summary");
-//           resultCounter++;
-//           if (clearPage) {
-//             rootAside.innerHTML = "";
-//             clearPage = false;
-//           }
-//           //rootAside.innerHTML = "";
-//           showCard(element);
-//           //episodeCard(element);
-//         }
-//       });
-//     } else if (dropDownValue != "") {
-//       // const object = findEpisodeByTitle(list, dropDownValue);
-//       // console.log(object, "<--------object to observe in search box");
-
-//       newList.forEach((element) => {
-//         // set name and summary to lower case for using include method
-//         const elementNamelowerCase = element.name.toLowerCase();
-//         const elementSummaryLowerCase = element.summary.toLowerCase();
-
-//         // check for including
-//         const includeName = elementNamelowerCase.includes(searchBoxValue);
-//         const includeSummary = elementSummaryLowerCase.includes(searchBoxValue);
-
-//         if (includeName || includeSummary) {
-//           console.log(element.name, "element.name-----------");
-//           console.log(element.summary, "-----element.summary");
-//           resultCounter++;
-//           episodeCard(element);
-//           if (clearPage) {
-//             rootAside.innerHTML = "";
-//             clearPage = false;
-//           }
-//           // rootAside.innerHTML = "";
-//           //showCard(element);
-//         }
-//       });
-//     }
-
-//     // Display the search counter
-//     searchCounter.innerHTML = `${resultCounter} item${
-//       resultCounter !== 1 ? "s" : ""
-//     } matched the search`;
-//     searchCounter.style.display = "inline-block";
+//[===dropDown===] back up after working on title clicking
+// showDropDown.addEventListener("change", () => {
+//   displayShowButton.style.display = "inline-block";
+//   dropDownValue = showDropDown.value;
+//   linkToFetch = getLink(dropDownValue);
+//   const foundItem = findEpisodeByTitle(list, dropDownValue);
+//   rootAside.innerHTML = "";
+//   sectionOfEpisodes.innerHTML = "";
+//   // clear the search box by any change in the drop down menue
+//   searchBox.value = "";
+//   if (foundItem) {
+//     showCard(foundItem);
 //   }
-
-//   rootAside.prepend(searchCounter);
-//   //end of search box event listener
+//   // else {
+//   //   showAllCards(list);
+//   // }
+//   if (linkToFetch) {
+//     dynamicFetch(linkToFetch).then(() => {
+//       numberOfFetches++;
+//       console.log(numberOfFetches, "------------NUMBER OF FETCH");
+//       const initialOption = `<option value="${dropDownValue}">Show All Episodes</option>`;
+//       showDropDown.innerHTML = initialOption;
+//       createDropDownList(newList, showDropDown);
+//       showAllCardsUpdated(newList);
+//       const foundEpisode = findEpisodeByTitle(newList, dropDownValue);
+//       // console.log(dropDownValue, "dropValueInside Fetch");
+//       // console.log(foundEpisode, "----foundEpisode");
+//       showValue = dropDownValue;
+//       // console.log(showValue, "showvalue inside fetch");
+//     });
+//   } else {
+//     if (dropDownValue == "") {
+//       //episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
+//       newList = [];
+//     } else {
+//       const ShowCover = findEpisodeByTitle(list, showValue);
+//       showCard(ShowCover);
+//       const episodeItem = findEpisodeByTitle(newList, dropDownValue);
+//       //console.log(episodeItem);
+//       episodeCard(episodeItem);
+//       //console.log(showValue, "showvalue inside else part of fetch");
+//     }
+//   }
 // });

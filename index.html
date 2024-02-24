@@ -46,25 +46,9 @@
         class="fa fa-home"
         aria-hidden="true"
         role="button"
+        title="Back To Main Page"
         aria-label="back to main page button"
       ></button>
-      <!-- <button id="all-show-button">Display All Shows</button> -->
-      <!-- ////////////////////// -->
-      <div id="search-box-container">
-        <div id="search-box-and-fa-icon">
-          <input
-            type="text"
-            id="search-box"
-            placeholder="Search Through the episodes and summary"
-          />
-        </div>
-        <button
-          class="fa fa-search search"
-          role="button"
-          aria-label="search button"
-        ></button>
-        <!-- <span id="search-counting"> </span> -->
-      </div>
       <template id="film-card">
         <section class="card">
           <div class="explaination">
@@ -100,20 +84,32 @@
       </aside>
 
       <aside id="side-bar">
+        <div id="search-box-container">
+          <div id="search-box-and-fa-icon">
+            <input
+              type="text"
+              id="search-box"
+              placeholder="Search Through the episodes and summary"
+            />
+          </div>
+          <button
+            class="fa fa-search search"
+            role="button"
+            aria-label="search button"
+            title="Press to search "
+          ></button>
+          <!-- <span id="search-counting"> </span> -->
+        </div>
         <!-- section of drop-down menue -->
-        <section id="search-section">
+        <div id="search-section">
           <label for="episode-drop-down">Find All The Shows:</label>
           <select name="episodes" id="episode-drop-down">
             <option value="">Show All Series</option>
           </select>
-        </section>
+        </div>
       </aside>
     </main>
     <footer id="footer"></footer>
-
-    <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
-    <!-- <script src="episodes.js"></script> -->
-
     <!-- Loads YOUR javascript code -->
     <script src="script.js"></script>
   </body>

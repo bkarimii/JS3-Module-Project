@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box
+}
+
 html,body{
   margin: 0;
   padding: 0;
@@ -48,31 +52,34 @@ section{
   margin-bottom: .5rem;
 }
 
+/* =================style for side bard============= */
 
-/* aside:first-child{
-  flex: 70%;
-}
-aside:last-child{
-  flex: 20%;
-  padding: 0;
-  margin-right: 0;
-} */
-
-
-#side-bar>div{
-  width: 100%;
-  margin: auto;
-}
-#side-bar>:nth-child(1)> *{
-  display: block;
-  width: 100%;
-  margin: auto;
-
-}
-#side-bar>:nth-child(2)>p{
-  font-size: x-large;
+#side-bar{
+  display: grid;
+  justify-content: space-around;
+  gap: 2rem;
+  margin-top: 2rem;
   
+
 }
+
+#side-bar>:nth-child(1){
+  display: flex;
+  
+  width: 100%;
+}
+#side-bar>:nth-child(2){
+  display: grid;
+  justify-content: space-around;
+  width: 100%;
+}
+/*  style for level 200 serach box and drop down */
+
+
+/* Add styling for the input box */
+
+
+/* ===============end of side bar search part================== */
 #subscribe-img{
   width: 40%;
 
@@ -100,47 +107,13 @@ aside:last-child{
 }
 
 
-/*  style for level 200 serach box and drop down */
-#search-box-container {
-  display: flex;
-  position: absolute;
-  /* Position the search box absolutely within the #main container */
-  top: 0;
-  /* Position it at the top of the #main container */
-  right: 0;
-  /* Position it at the left of the #main container */
-  padding: 1rem;
-  z-index: 1;
-  /* Ensure it's on top of other elements within #main */
-  width: 20%;
-  color: #fff;
-
-  margin-right:2rem ;
-}
-
-/* Add styling for the input box */
-#search-box-container input {
-  width: 100%;
-  padding: 0.5rem;
-  border:none;
-  outline: none;
-
-  background-color: transparent;
-  color: white;
-}
-
 
 #root {
   flex: 70%;
   margin-top: 2rem;
 }
 
-#side-bar {
-  flex: 20%;
-  padding: 0;
-  margin-right: 0;
-  margin-top: 2rem;
-}
+
 
 .site-header {
   background-color: #000000;
@@ -195,10 +168,7 @@ aside:last-child{
   font-size: larger;
 }
 
-#search-icon:hover{
-  cursor: pointer;
-  
-} 
+
 
 #display-matched-result{
   margin: 1em auto;
@@ -282,7 +252,7 @@ aside:last-child{
 
 .link-to-original{
   text-decoration: none;
-  color: #fff;
+  color: #ff0000;
 }
 
 .link-to-original:hover{
