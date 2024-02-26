@@ -187,11 +187,9 @@ let showValue = "";
 
 //first drop box for all shows
 const showDropDown = document.querySelector("#episode-drop-down");
-console.log(showDropDown.value, "this is drop value out of eventlistener");
 
 //Dropdown select list of shows and episodes
 showDropDown.addEventListener("change", () => {
-  console.log(episodeObject, "<----object");
   displayShowButton.style.display = "inline-block";
   dropDownValue = showDropDown.value;
   linkToFetch = getLink(dropDownValue);
@@ -230,25 +228,22 @@ showDropDown.addEventListener("change", () => {
           // const initialOption = `<option value = ${foundItem.name}>Show All Episodes</option>`;
           // showDropDown.innerHTML = initialOption;
           createDropDownList(episodeObject[foundItem.id], showDropDown);
-
-          console.log(episodeObject, "<----episodeObject in Fetch in dropdown");
         });
     }
   } else {
+    console.log(firstOption(), "first option=======");
     const foundShowObject = findEpisodeByTitle(list, firstOption());
+    console.log(foundShowObject, "this is show Object for error");
     const foundEpisodeObject = findEpisodeByTitle(
       episodeObject[foundShowObject.id],
       dropDownValue
     );
-    console.log(foundEpisodeObject, "this is episode object");
-    console.log(foundShowObject, "this is showObject");
     showCard(foundShowObject);
     episodeCard(foundEpisodeObject);
   }
 
   //End of DropDown
 });
-console.log(dropDownValue, "this is drop down value");
 /////////////////////////////this function find episode or show by title or drop down value//////////////////////////////////////////////
 function findEpisodeByTitle(episodeList, title) {
   return episodeList.find((episode) => {
@@ -537,14 +532,19 @@ function idFinder(title) {
 function clickOnTitle(item) {
   // const episode = padStartEpisodes(item.season, item.number);
   const name = `${item.name}`;
-  console.log(name, "this is name---------");
+  console.log(name, "this is name");
   dropDownValue = name;
   if (item.id in episodeObject) {
     rootAside.innerHTML = "";
     sectionOfEpisodes.innerHTML = "";
+    // showDropDown.innerHTML = "";
+    // const initialOption = `<option value = ${name}>Show All Episodes</option>`;
+    // showDropDown.innerHTML = initialOption;
     showDropDown.innerHTML = "";
-    const initialOption = `<option value = ${name}>Show All Episodes</option>`;
-    showDropDown.innerHTML = initialOption;
+    const option = document.createElement("option");
+    option.value = `${name}`;
+    option.textContent = "Show All Episodes";
+    showDropDown.appendChild(option);
     createDropDownList(episodeObject[item.id], showDropDown);
     displayShowButton.style.display = "inline-block";
     showCard(item);
@@ -554,89 +554,22 @@ function clickOnTitle(item) {
     dynamicFetch(tvShowUrl)
       .then(() => {
         episodeObject[item.id] = data;
-        MYLIST = [];
-        console.log(episodeObject);
       })
       .then(() => {
         rootAside.innerHTML = "";
         sectionOfEpisodes.innerHTML = "";
         showCard(item);
         showAllCardsUpdated(episodeObject[item.id]);
+        // showDropDown.innerHTML = "";
+        // const initialOption = `<option value = ${name}>Show All Episodes</option>`;
+        // showDropDown.innerHTML = initialOption;
         showDropDown.innerHTML = "";
-        const initialOption = `<option value = ${name}>Show All Episodes</option>`;
-        showDropDown.innerHTML = initialOption;
+        const option = document.createElement("option");
+        option.value = `${name}`;
+        option.textContent = "Show All Episodes";
+        showDropDown.appendChild(option);
         createDropDownList(episodeObject[item.id], showDropDown);
         displayShowButton.style.display = "inline-block";
       });
-
-    console.log("just for test -----------");
   }
 }
-
-//////Test function for clicking on title initial Demo///////
-
-// function clickOnTitle(list) {
-//   const sections = document.querySelectorAll(".card");
-//   for (const section of sections) {
-//     const titleElement = section.querySelector("h2#film-title");
-//     const titleElementContent = titleElement.textContent.trim();
-//     if (titleElement) {
-//       const item = list.find((object) =>
-//         object.name.includes(titleElementContent)
-//       );
-//       // Add your event listener here, e.g.:
-//       titleElement.addEventListener("click", () => {
-//         console.log("Clicked on title:", titleElement.textContent);
-//         console.log("item", item);
-//         rootAside.innerHTML = "";
-//         episodeCard(item);
-//         showAllCards(newList);
-//       });
-//     }
-//   }
-// }
-
-//[===dropDown===] back up after working on title clicking
-// showDropDown.addEventListener("change", () => {
-//   displayShowButton.style.display = "inline-block";
-//   dropDownValue = showDropDown.value;
-//   linkToFetch = getLink(dropDownValue);
-//   const foundItem = findEpisodeByTitle(list, dropDownValue);
-//   rootAside.innerHTML = "";
-//   sectionOfEpisodes.innerHTML = "";
-//   // clear the search box by any change in the drop down menue
-//   searchBox.value = "";
-//   if (foundItem) {
-//     showCard(foundItem);
-//   }
-//   // else {
-//   //   showAllCards(list);
-//   // }
-//   if (linkToFetch) {
-//     dynamicFetch(linkToFetch).then(() => {
-//       numberOfFetches++;
-//       console.log(numberOfFetches, "------------NUMBER OF FETCH");
-//       const initialOption = `<option value="${dropDownValue}">Show All Episodes</option>`;
-//       showDropDown.innerHTML = initialOption;
-//       createDropDownList(newList, showDropDown);
-//       showAllCardsUpdated(newList);
-//       const foundEpisode = findEpisodeByTitle(newList, dropDownValue);
-//       // console.log(dropDownValue, "dropValueInside Fetch");
-//       // console.log(foundEpisode, "----foundEpisode");
-//       showValue = dropDownValue;
-//       // console.log(showValue, "showvalue inside fetch");
-//     });
-//   } else {
-//     if (dropDownValue == "") {
-//       //episodeDropDown.innerHTML = '<option value="">Show All Episodes</option>';
-//       newList = [];
-//     } else {
-//       const ShowCover = findEpisodeByTitle(list, showValue);
-//       showCard(ShowCover);
-//       const episodeItem = findEpisodeByTitle(newList, dropDownValue);
-//       //console.log(episodeItem);
-//       episodeCard(episodeItem);
-//       //console.log(showValue, "showvalue inside else part of fetch");
-//     }
-//   }
-// });
