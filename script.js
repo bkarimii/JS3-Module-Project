@@ -231,9 +231,9 @@ showDropDown.addEventListener("change", () => {
         });
     }
   } else {
-    console.log(firstOption(), "first option=======");
     const foundShowObject = findEpisodeByTitle(list, firstOption());
-    console.log(foundShowObject, "this is show Object for error");
+
+    // foundEpisodeObject variable returns array of the episodes in the object of the all episodes
     const foundEpisodeObject = findEpisodeByTitle(
       episodeObject[foundShowObject.id],
       dropDownValue
@@ -275,7 +275,10 @@ searchButton.addEventListener("click", () => {
   clearPage = true;
   resultCounter = 0;
   let isDropDownEmpty = dropDownValue == "";
+  console.log(firstOption(), "first value of all showsS");
+
   if (isDropDownEmpty) {
+    console.log("dropvalue is empty");
     const filteredShows = searchFunction(list, searchBoxValue);
     if (filteredShows) {
       rootAside.innerHTML = "";
@@ -290,7 +293,18 @@ searchButton.addEventListener("click", () => {
       searchNotFound();
     }
   } else {
-    const filteredEpisodes = searchFunction(newList, searchBoxValue);
+    const foundShowObject = findEpisodeByTitle(list, firstOption());
+
+    // foundEpisodeObject variable returns array of the episodes in the object of the all episodes
+    const foundEpisodeObject = findEpisodeByTitle(
+      episodeObject[foundShowObject.id],
+      dropDownValue
+    );
+    // const filteredEpisodes = searchFunction(newList, searchBoxValue);
+    const filteredEpisodes = searchFunction(
+      episodeObject[foundShowObject.id],
+      searchBoxValue
+    );
     if (filteredEpisodes) {
       rootAside.innerHTML = "";
 
@@ -313,6 +327,7 @@ searchButton.addEventListener("click", () => {
 
 searchButton.disabled = true;
 searchBox.addEventListener("input", () => {
+  console.log(dropDownValue, "inside search Box");
   const searchBoxValue = searchBox.value.trim().toLowerCase();
   if (searchBoxValue == "") {
     searchButton.disabled = true;
@@ -334,6 +349,9 @@ searchBox.addEventListener("input", () => {
         sectionOfEpisodes.innerHTML = "";
 
         const foundShowObject = findEpisodeByTitle(list, firstOption());
+        console.log(foundShowObject, "new one for error");
+
+        console.log(foundShowObject, "foundShow Object error");
         const foundEpisodeObject = findEpisodeByTitle(
           episodeObject[foundShowObject.id],
           dropDownValue
@@ -483,14 +501,20 @@ function showAllCardsUpdated(list) {
 // ==========LEVEL 500 ==========
 
 const displayShowButton = document.getElementById("all-show-button");
+// by clicking on it , returns back to main page
 displayShowButton.addEventListener("click", () => {
   rootAside.innerHTML = "";
   showAllCards(list);
-  const initialOption = '<option value="">Show All Shows</option>';
-  showDropDown.innerHTML = initialOption;
+  showDropDown.innerHTML = "";
+  const option = document.createElement("option");
+  option.value = "";
+  option.textContent = "show All Series";
+  showDropDown.appendChild(option);
   createDropDownList(list, showDropDown);
   searchBox.value = "";
   displayShowButton.style.display = "none";
+
+  console.log(dropDownValue, "inside button");
 });
 
 function searchFunction(array, content) {
@@ -532,7 +556,6 @@ function idFinder(title) {
 function clickOnTitle(item) {
   // const episode = padStartEpisodes(item.season, item.number);
   const name = `${item.name}`;
-  console.log(name, "this is name");
   dropDownValue = name;
   if (item.id in episodeObject) {
     rootAside.innerHTML = "";
