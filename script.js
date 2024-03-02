@@ -560,9 +560,6 @@ function clickOnTitle(item) {
   if (item.id in episodeObject) {
     rootAside.innerHTML = "";
     sectionOfEpisodes.innerHTML = "";
-    // showDropDown.innerHTML = "";
-    // const initialOption = `<option value = ${name}>Show All Episodes</option>`;
-    // showDropDown.innerHTML = initialOption;
     showDropDown.innerHTML = "";
     const option = document.createElement("option");
     option.value = `${name}`;
@@ -583,9 +580,6 @@ function clickOnTitle(item) {
         sectionOfEpisodes.innerHTML = "";
         showCard(item);
         showAllCardsUpdated(episodeObject[item.id]);
-        // showDropDown.innerHTML = "";
-        // const initialOption = `<option value = ${name}>Show All Episodes</option>`;
-        // showDropDown.innerHTML = initialOption;
         showDropDown.innerHTML = "";
         const option = document.createElement("option");
         option.value = `${name}`;
