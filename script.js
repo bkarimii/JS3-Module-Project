@@ -590,3 +590,5 @@ function clickOnTitle(item) {
       });
   }
 }
+
+// Level 500 completed
