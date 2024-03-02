@@ -504,7 +504,6 @@ const displayShowButton = document.getElementById("all-show-button");
 // by clicking on it , returns back to main page
 displayShowButton.addEventListener("click", () => {
   rootAside.innerHTML = "";
-  showAllCards(list);
   showDropDown.innerHTML = "";
   const option = document.createElement("option");
   option.value = "";
@@ -513,7 +512,8 @@ displayShowButton.addEventListener("click", () => {
   createDropDownList(list, showDropDown);
   searchBox.value = "";
   displayShowButton.style.display = "none";
-
+  showAllCards(list);
+  dropDownValue = "";
   console.log(dropDownValue, "inside button");
 });
 
