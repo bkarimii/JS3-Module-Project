@@ -181,7 +181,10 @@ footer {
   text-decoration: none;
   color: white;
 }
+#film-title:hover{
+  cursor: pointer;
 
+}
 #film-title > a{
   text-decoration: none;
   color: #444;
